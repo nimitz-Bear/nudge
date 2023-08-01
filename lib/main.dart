@@ -61,7 +61,11 @@
 //   }
 // }
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'models/item.dart';
+import 'screens/home_page.dart';
 import 'screens/login_page.dart';
 
 void main() {
@@ -83,7 +87,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Georgia',
 
         //text styling
-        textTheme: TextTheme(
+        textTheme: const TextTheme(
           displayLarge: TextStyle(
               fontSize: 72.0, fontWeight: FontWeight.bold, color: Colors.black),
           displayMedium: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
@@ -91,7 +95,8 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
+      // home: LoginPage(),
+      home: HomePage(),
     );
   }
 }
