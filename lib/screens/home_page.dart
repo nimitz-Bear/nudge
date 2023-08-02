@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
@@ -55,12 +53,12 @@ class _HomePageState extends State<HomePage> {
     TodoItem item;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.tertiary,
         title: const Text("TO DO"),
         actions: [
           IconButton(onPressed: () => {}, icon: const Icon(Icons.menu))
         ],
       ),
-      backgroundColor: const Color(0xffD3D3D3),
       body: SafeArea(
         child: Center(
           child: Column(
@@ -72,7 +70,7 @@ class _HomePageState extends State<HomePage> {
 
               const SizedBox(height: 50),
               // text saying today and current date
-              Text("Today, " + getCurrentDate()),
+              Text("Today, ${getCurrentDate()}"),
 
               Expanded(
                 child: SizedBox(
@@ -124,7 +122,9 @@ class _HomePageState extends State<HomePage> {
               ),
 
               ElevatedButton(
-                // style:,
+                style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Theme.of(context).colorScheme.tertiary)),
                 onPressed: () {
                   item =
                       TodoItem(itemID: "test", itemName: "make notes for math");
