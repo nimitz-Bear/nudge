@@ -50,8 +50,18 @@ class TodoItem {
   }
 
   void insertItem() async {
-    await FirebaseFirestore.instance
-        .collection('items')
-        .add({toMap()} as Map<String, dynamic>);
+    var db = FirebaseFirestore.instance;
+    // await FirebaseFirestore.instance
+    //     .collection('items')
+    //     .add({toMap()});
+
+    // CollectionReference items = FirebaseFirestore.instance.collection('items');
+
+    // items.add({TodoItem(itemID: "test", itemName: "map").toMap()});
+    db
+        .collection("items")
+        .doc(itemID)
+        .set(toMap())
+        .onError((e, _) => print("Error writing document: $e"));
   }
 }

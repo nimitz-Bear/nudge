@@ -1,74 +1,10 @@
-// import 'package:firebase_core/firebase_core.dart';
-// import 'package:flutter/material.dart';
-
-// Future<void> main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp();
-//   runApp(const MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: Scaffold(
-//         appBar: AppBar(
-//           backgroundColor: Colors.deepOrange,
-//           title: const Text('Hello there'),
-//         ),
-//         body: const LoginWidget(),
-//       ),
-//     );
-//   }
-// }
-
-// class LoginWidget extends StatefulWidget {
-//   const LoginWidget({super.key});
-
-//   @override
-//   State<LoginWidget> createState() => _LoginWidgetState();
-// }
-
-// class _LoginWidgetState extends State<LoginWidget> {
-//   TextEditingController emailController = TextEditingController();
-//   @override
-//   Widget build(BuildContext context) {
-//     return ListView(
-//       children: [
-//         Container(
-//           padding: const EdgeInsets.all(10),
-//           child: TextField(
-//             controller: emailController,
-//             decoration: const InputDecoration(
-//               border: OutlineInputBorder(),
-//               labelText: 'email',
-//             ),
-//           ),
-//         ),
-//         Container(
-//             height: 50,
-//             padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-//             child: ElevatedButton(
-//               child: const Text('Continue with email'),
-//               onPressed: () {
-//                 print(emailController.text);
-//               },
-//             )),
-//       ],
-//     );
-//   }
-// }
-
-import 'dart:convert';
-
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'models/item.dart';
 import 'screens/home_page.dart';
-import 'screens/login_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
@@ -43,13 +45,14 @@ class _HomePageState extends State<HomePage> {
   /// method to get the current name of the month and day
   String getCurrentDate() {
     var now = DateTime.now();
-    var formatter = DateFormat('MMMM DD');
+    var formatter = DateFormat('MMMM dd');
     String formattedDate = formatter.format(now);
     return formattedDate;
   }
 
   @override
   Widget build(BuildContext context) {
+    TodoItem item;
     return Scaffold(
       appBar: AppBar(
         title: const Text("TO DO"),
@@ -122,8 +125,15 @@ class _HomePageState extends State<HomePage> {
 
               ElevatedButton(
                 // style:,
-                onPressed: () =>
-                    {TodoItem(itemID: "test", itemName: "Read harry potter")},
+                onPressed: () {
+                  item =
+                      TodoItem(itemID: "test", itemName: "make notes for math");
+
+                  item.insertItem();
+                  setState(() {
+                    todayToDoList.add(item);
+                  });
+                },
                 child: const Text('Add'),
               ),
 
