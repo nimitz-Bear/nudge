@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
+import 'package:nudge/screens/individual_page.dart';
 import 'package:nudge/widgets/todo_tile.dart';
 
 class HomePage extends StatefulWidget {
@@ -64,13 +65,15 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              // app bar (with menu button, filter options)
-
               // banner
 
               const SizedBox(height: 50),
               // text saying today and current date
               Text("Today, ${getCurrentDate()}"),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Divider(color: Theme.of(context).colorScheme.tertiary),
+              ),
 
               Expanded(
                 child: SizedBox(
@@ -87,52 +90,54 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
 
-              // list view for tommorow
-              const Text("Tommorow"),
-              Expanded(
-                child: SizedBox(
-                  height: 200.0,
-                  child: ListView.builder(
-                    itemCount: tommorowToDoList.length,
-                    itemBuilder: (context, index) {
-                      return ToDoTile(
-                          item: tommorowToDoList[index],
-                          onChanged: (value) =>
-                              checkBoxChanged(value, tommorowToDoList[index]));
-                    },
-                  ),
-                ),
-              ),
+              // // list view for tommorow
+              // const Text("Tommorow"),
+              // Expanded(
+              //   child: SizedBox(
+              //     height: 200.0,
+              //     child: ListView.builder(
+              //       itemCount: tommorowToDoList.length,
+              //       itemBuilder: (context, index) {
+              //         return ToDoTile(
+              //             item: tommorowToDoList[index],
+              //             onChanged: (value) =>
+              //                 checkBoxChanged(value, tommorowToDoList[index]));
+              //       },
+              //     ),
+              //   ),
+              // ),
 
-              // list view for the week
-              const Text("Week"),
-              Expanded(
-                child: SizedBox(
-                  height: 200.0,
-                  child: ListView.builder(
-                    itemCount: weekToDoList.length,
-                    itemBuilder: (context, index) {
-                      return ToDoTile(
-                          item: weekToDoList[index],
-                          onChanged: (value) =>
-                              checkBoxChanged(value, weekToDoList[index]));
-                    },
-                  ),
-                ),
-              ),
+              // // list view for the week
+              // const Text("Week"),
+              // Expanded(
+              //   child: SizedBox(
+              //     height: 200.0,
+              //     child: ListView.builder(
+              //       itemCount: weekToDoList.length,
+              //       itemBuilder: (context, index) {
+              //         return ToDoTile(
+              //             item: weekToDoList[index],
+              //             onChanged: (value) =>
+              //                 checkBoxChanged(value, weekToDoList[index]));
+              //       },
+              //     ),
+              //   ),
+              // ),
 
               ElevatedButton(
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
                         Theme.of(context).colorScheme.tertiary)),
                 onPressed: () {
-                  item =
-                      TodoItem(itemID: "test", itemName: "make notes for math");
+                  // item =
+                  //     TodoItem(itemID: "test", itemName: "make notes for math");
 
-                  item.insertItem();
-                  setState(() {
-                    todayToDoList.add(item);
-                  });
+                  // item.insertItem();
+                  // setState(() {
+                  //   todayToDoList.add(item);
+                  // });
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => IndividualPage()));
                 },
                 child: const Text('Add'),
               ),

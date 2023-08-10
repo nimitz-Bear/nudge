@@ -9,6 +9,19 @@ void main() async {
   runApp(const MyApp());
 }
 
+const Map<int, Color> color = {
+  50: Color.fromRGBO(136, 14, 79, .1),
+  100: Color.fromRGBO(136, 14, 79, .2),
+  200: Color.fromRGBO(136, 14, 79, .3),
+  300: Color.fromRGBO(136, 14, 79, .4),
+  400: Color.fromRGBO(136, 14, 79, .5),
+  500: Color.fromRGBO(136, 14, 79, .6),
+  600: Color.fromRGBO(136, 14, 79, .7),
+  700: Color.fromRGBO(136, 14, 79, .8),
+  800: Color.fromRGBO(136, 14, 79, .9),
+  900: Color.fromRGBO(136, 14, 79, 1),
+};
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -16,7 +29,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: Color(0xFF3f6a85),
+          selectionColor: Color(0xFF3f6a85),
+          selectionHandleColor: Color(0xFF3f6a85),
+        ),
         brightness: Brightness.light,
+        primarySwatch: MaterialColor(0xFFFFFFF, color),
         // fff9fe whiteish 60
         // fdb400 yellowish 30 (text)
         // 3f6a85 blue-grey 10 (titles, important buttons)
@@ -33,8 +52,8 @@ class MyApp extends StatelessWidget {
             onError: Colors.white,
             background: Color(0xFFfff9fe),
             onBackground: Color(0xFFfdb400),
-            surface: Colors.black,
-            onSurface: Colors.white),
+            surface: Color(0xFFfff9fe),
+            onSurface: Color(0xFF3f6a85)),
 
         // accent: const Color(0xFFFFA500),
 

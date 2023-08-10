@@ -19,6 +19,7 @@ class TodoItem {
   bool isRepeating = false;
   DateTime? time;
   String? location;
+  String? link;
   bool isReminder = false;
   List<String>? labels;
 
@@ -32,6 +33,7 @@ class TodoItem {
       this.itemDescription,
       this.time,
       this.location,
+      this.link,
       this.isRepeating = false,
       this.labels});
 
@@ -43,6 +45,7 @@ class TodoItem {
       'done': done,
       'isRepeating': isRepeating,
       'time': time,
+      'link': link,
       'location': location,
       'isReminder': isReminder,
       'labels': labels
