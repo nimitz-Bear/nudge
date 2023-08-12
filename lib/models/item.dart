@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TodoItem {
-  String itemID;
+  String itemID = "";
   String itemName;
   String? itemDescription;
   bool done = false;
@@ -16,8 +16,8 @@ class TodoItem {
   //Group? (i.e. routine)
 
   TodoItem(
-      {required this.itemID,
-      required this.itemName,
+      {required this.itemName,
+      required this.itemID,
       this.done = false,
       this.isRepeating = false,
       this.itemDescription,

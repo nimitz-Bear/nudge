@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
@@ -198,7 +200,10 @@ class _IndividualPageState extends State<IndividualPage> {
                   child: const Text("Save"),
                   onPressed: () {
                     TodoItem item = TodoItem(
-                        itemID: "test",
+                        itemID: FirebaseFirestore.instance
+                            .collection("items")
+                            .doc()
+                            .id,
                         itemName: titleController?.text ?? "",
                         itemDescription: descriptionController?.text,
                         location: locationController?.text,

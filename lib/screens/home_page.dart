@@ -13,13 +13,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // TODO: change this to use firebase
-  // List<TodoItem> todayToDoList = [
-  //   TodoItem(
-  //     itemID: "testID",
-  //     itemName: "Make lunch",
-  //   ),
-  // ];
   List<TodoItem> todayToDoList = [];
 
   void deleteTask(TodoItem item, int index) {
