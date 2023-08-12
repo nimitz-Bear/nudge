@@ -35,14 +35,14 @@ class MyApp extends StatelessWidget {
           selectionHandleColor: Color(0xFF3f6a85),
         ),
         brightness: Brightness.light,
-        primarySwatch: MaterialColor(0xFFFFFFF, color),
+        primarySwatch: MaterialColor(0xFF3f6a85, color),
         // fff9fe whiteish 60
         // fdb400 yellowish 30 (text)
         // 3f6a85 blue-grey 10 (titles, important buttons)
 
         colorScheme: const ColorScheme(
             brightness: Brightness.light,
-            primary: Color(0xFFfff9fe),
+            primary: Colors.black,
             onPrimary: Color(0xFFfdb400),
             secondary: Color(0xFFfdb400),
             onSecondary: Color(0xFF3f6a85), // can also be whiteish

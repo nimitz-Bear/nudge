@@ -18,35 +18,55 @@ class _IndividualPageState extends State<IndividualPage> {
   TextEditingController? linkController = TextEditingController();
 
   bool done = false;
+  bool doNotification = false;
   DateTime selectedDate = DateTime.now();
   var outputFormat = DateFormat('MMM dd HH:mm');
 
+  String _date = "";
   void onChanged(bool? value) {
     setState(() {
       done = !done;
     });
   }
 
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101));
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-      });
-    }
+  Future<DateTime?> showDateTimePicker({
+    required BuildContext context,
+    DateTime? initialDate,
+    DateTime? firstDate,
+    DateTime? lastDate,
+  }) async {
+    initialDate ??= DateTime.now();
+    firstDate ??= initialDate.subtract(const Duration(days: 365 * 100));
+    lastDate ??= firstDate.add(const Duration(days: 365 * 200));
 
-    if (context.mounted) {
-      showDatePicker(
-          context: context,
-          initialDate: selectedDate,
-          firstDate: DateTime(2015, 8),
-          lastDate: DateTime(2101));
-    }
+    final DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
+
+    if (selectedDate == null) return null;
+
+    if (!context.mounted) return selectedDate;
+
+    final TimeOfDay? selectedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.fromDateTime(selectedDate),
+    );
+
+    return selectedTime == null
+        ? selectedDate
+        : DateTime(
+            selectedDate.year,
+            selectedDate.month,
+            selectedDate.day,
+            selectedTime.hour,
+            selectedTime.minute,
+          );
   }
+
+  // TODO: refactor so that only the date/time picker is Stateful
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +102,9 @@ class _IndividualPageState extends State<IndividualPage> {
                         child: TextFormField(
                           // initialValue: "Rebuild all of Discord from scratch",
                           decoration: const InputDecoration(
-                              hintText: "Title", border: InputBorder.none),
+                              labelText: "Name",
+                              hintText: "Title",
+                              border: InputBorder.none),
                           controller: titleController,
                           style: Theme.of(context).textTheme.titleLarge,
                           maxLines: null,
@@ -115,10 +137,36 @@ class _IndividualPageState extends State<IndividualPage> {
                 children: [
                   const Icon(Icons.access_time_outlined),
                   TextButton(
-                    onPressed: () => _selectDate(context),
+                    onPressed: () async {
+                      DateTime? test =
+                          await showDateTimePicker(context: context);
+
+                      setState(() {
+                        if (test != null) selectedDate = test;
+                      });
+                    },
                     child: Text(outputFormat.format(selectedDate),
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.tertiary)),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  const Icon(Icons.alarm),
+                  const SizedBox(width: 10),
+                  const Text("Notification"),
+                  Switch(
+                    // This bool value toggles the switch.
+                    value: doNotification,
+                    activeColor: Theme.of(context).colorScheme.secondary,
+                    onChanged: (bool value) {
+                      // This is called when the user toggles the switch.
+                      setState(() {
+                        doNotification = value;
+                        // widget.onValueChanged(value);
+                      });
+                    },
                   ),
                 ],
               ),
@@ -140,15 +188,14 @@ class _IndividualPageState extends State<IndividualPage> {
                   height: 50, child: Center(child: Text("Do Labels here"))),
               // TODO: a list of labels and a + button
               // TODO: Checklist
+
               const Expanded(
                 child: SizedBox(),
               ),
               Align(
                 alignment: Alignment.bottomRight,
-                child: FloatingActionButton(
-                  backgroundColor: Theme.of(context).colorScheme.tertiary,
-                  child: Icon(Icons.add,
-                      color: Theme.of(context).colorScheme.secondary),
+                child: TextButton(
+                  child: const Text("Save"),
                   onPressed: () {
                     TodoItem item = TodoItem(
                         itemID: "test",

@@ -1,14 +1,3 @@
-// enum Priority {
-//   urgent,
-//   medium,
-//   high,
-//   low,
-// }
-
-// enum Size {
-
-// }
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TodoItem {
@@ -20,7 +9,7 @@ class TodoItem {
   DateTime? time;
   String? location;
   String? link;
-  bool isReminder = false;
+  bool isReminder = true;
   List<String>? labels;
 
   //Labels
@@ -30,26 +19,51 @@ class TodoItem {
       {required this.itemID,
       required this.itemName,
       this.done = false,
+      this.isRepeating = false,
       this.itemDescription,
       this.time,
       this.location,
       this.link,
-      this.isRepeating = false,
+      this.isReminder = true,
       this.labels});
 
   Map<String, dynamic> toMap() {
     return {
       'itemID': itemID,
       'itemName': itemName,
-      'itemDescription': itemDescription,
+      'itemDescription': itemDescription ?? "",
       'done': done,
       'isRepeating': isRepeating,
-      'time': time,
-      'link': link,
-      'location': location,
+      'time': time, //TODO: come up with some kind of null safety for this
+      'link': link ?? "",
+      'location': location ?? "",
       'isReminder': isReminder,
-      'labels': labels
+      'labels': labels ?? []
     };
+  }
+
+  // static Question fromMap(Map<String, dynamic> map) {
+  //   return Question(
+  //     map['text'],
+  //     map['answer'],
+  //     map['correctAnswer'].ToString() == 'true'
+  //   );
+  // }
+  static TodoItem fromMap(Map<String, dynamic> map) {
+    print(map['labels']);
+    return TodoItem(
+        itemID: map['itemId'] ?? "",
+        itemName: map['itemName'] ?? "",
+        itemDescription: map['itemDescription'] ?? "",
+        done: map['done'],
+        isRepeating: map['isRepeating'],
+        // time: DateTime.now()
+        // DateTime.now()
+        // , //FIXME: do some kind of null checking for this
+        link: map['link'] ?? "",
+        location: map['location'] ?? "",
+        isReminder: map['isReminder'],
+        labels: List<String>.from(map['labels'] ?? []));
   }
 
   void insertItem() async {
@@ -68,3 +82,5 @@ class TodoItem {
         .onError((e, _) => print("Error writing document: $e"));
   }
 }
+
+//TODO: delete function

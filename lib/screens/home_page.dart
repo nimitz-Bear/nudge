@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
@@ -13,32 +14,49 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   // TODO: change this to use firebase
-  List<TodoItem> todayToDoList = [
-    TodoItem(
-      itemID: "testID",
-      itemName: "Make lunch",
-    ),
-  ];
+  // List<TodoItem> todayToDoList = [
+  //   TodoItem(
+  //     itemID: "testID",
+  //     itemName: "Make lunch",
+  //   ),
+  // ];
+  List<TodoItem> todayToDoList = [];
 
-  List<TodoItem> tommorowToDoList = [
-    TodoItem(
-      itemID: "testID",
-      itemName: "Pack bags",
-    ),
-  ];
+  void deleteTask(TodoItem item, int index) {
+    setState(() {
+      todayToDoList.removeAt(index);
+    });
+  }
 
-  List<TodoItem> weekToDoList = [
-    TodoItem(
-      itemID: "testID",
-      itemName: "Get ready",
-    ),
-  ];
+  Future<List<TodoItem>> getItems() async {
+    List<TodoItem> items = [];
+
+    await FirebaseFirestore.instance.collection("items").get().then((value) {
+      List<Map<String, dynamic>> data = [];
+
+      for (var i in value.docs) {
+        data.add(i.data());
+      }
+
+      for (var element in data) {
+        items.add(TodoItem.fromMap(element));
+      }
+
+      items.forEach((element) {
+        print(element.toMap());
+      });
+    });
+
+    // var test = doc.data();
+    return items;
+  }
 
   // checkbox was tapped
   void checkBoxChanged(bool? newValue, TodoItem item) {
     setState(() {
       item.done = !item.done;
     });
+    item.insertItem();
   }
 
   /// method to get the current name of the month and day
@@ -51,7 +69,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    TodoItem item;
+    void test() async {
+      todayToDoList = await getItems();
+      setState(() {});
+    }
+
+    test();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.tertiary,
@@ -82,9 +106,12 @@ class _HomePageState extends State<HomePage> {
                     itemCount: todayToDoList.length,
                     itemBuilder: (context, index) {
                       return ToDoTile(
-                          item: todayToDoList[index],
-                          onChanged: (value) =>
-                              checkBoxChanged(value, todayToDoList[index]));
+                        item: todayToDoList[index],
+                        onChanged: (value) =>
+                            checkBoxChanged(value, todayToDoList[index]),
+                        deleteFunction: (context) =>
+                            deleteTask(todayToDoList[index], index),
+                      );
                     },
                   ),
                 ),
