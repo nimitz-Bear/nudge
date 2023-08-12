@@ -33,6 +33,7 @@ class _HomePageState extends State<HomePage> {
 
       for (var element in data) {
         items.add(TodoItem.fromMap(element));
+        // print(element);
       }
 
       items.forEach((element) {
@@ -62,12 +63,12 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    void test() async {
+    void refreshItems() async {
       todayToDoList = await getItems();
       setState(() {});
     }
 
-    test();
+    refreshItems();
 
     return Scaffold(
       appBar: AppBar(

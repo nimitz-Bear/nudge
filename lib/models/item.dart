@@ -34,7 +34,8 @@ class TodoItem {
       'itemDescription': itemDescription ?? "",
       'done': done,
       'isRepeating': isRepeating,
-      'time': time, //TODO: come up with some kind of null safety for this
+      'time': time
+          ?.millisecondsSinceEpoch, //TODO: come up with some kind of null safety for this
       'link': link ?? "",
       'location': location ?? "",
       'isReminder': isReminder,
@@ -52,18 +53,25 @@ class TodoItem {
   static TodoItem fromMap(Map<String, dynamic> map) {
     print(map['labels']);
     return TodoItem(
-        itemID: map['itemId'] ?? "",
+        itemID: map['itemID'] ?? "",
         itemName: map['itemName'] ?? "",
         itemDescription: map['itemDescription'] ?? "",
         done: map['done'],
         isRepeating: map['isRepeating'],
-        // time: DateTime.now()
+        time: DateTime.fromMillisecondsSinceEpoch(map['time']),
         // DateTime.now()
         // , //FIXME: do some kind of null checking for this
         link: map['link'] ?? "",
         location: map['location'] ?? "",
         isReminder: map['isReminder'],
         labels: List<String>.from(map['labels'] ?? []));
+  }
+
+  void updateItem() async {
+    var collection = FirebaseFirestore.instance.collection('items');
+    collection
+        .doc(itemID) // <-- Doc ID where data should be updated.
+        .update(toMap());
   }
 
   void insertItem() async {

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
@@ -24,11 +23,47 @@ class _IndividualPageState extends State<IndividualPage> {
   DateTime selectedDate = DateTime.now();
   var outputFormat = DateFormat('MMM dd HH:mm');
 
-  String _date = "";
-  void onChanged(bool? value) {
+  void onCheckboxChanged(bool? value) {
     setState(() {
       done = !done;
     });
+  }
+
+  void setupExistingItem() {
+    TodoItem item;
+
+    // don't do anything if there is no widget
+    if (widget.item == null) {
+      return;
+    } else {
+      item = widget.item!;
+    }
+
+    // string values
+    titleController?.text = item.itemName;
+    descriptionController?.text = item.itemDescription ?? "";
+    locationController?.text = item.location ?? "";
+    linkController?.text = item.link ?? "";
+
+    // time
+    selectedDate =
+        item.time ?? DateTime.now(); //TODO: figure out how to read in the time
+
+    // bool
+    done = item.done;
+    doNotification = item.isReminder;
+
+    //TODO: add ui elements for repeating and for labels
+  }
+
+  void saveFields(TodoItem item) {
+    item.itemName = titleController?.text ?? "";
+    item.itemDescription = descriptionController?.text;
+    item.location = locationController?.text;
+    item.link = linkController?.text;
+    item.time = selectedDate;
+    item.isReminder = doNotification;
+    item.done = done;
   }
 
   Future<DateTime?> showDateTimePicker({
@@ -68,6 +103,11 @@ class _IndividualPageState extends State<IndividualPage> {
           );
   }
 
+  @override
+  void initState() {
+    setupExistingItem();
+    super.initState();
+  }
   // TODO: refactor so that only the date/time picker is Stateful
 
   @override
@@ -84,9 +124,7 @@ class _IndividualPageState extends State<IndividualPage> {
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.start,
-
             children: [
               // Row with:
               //  checkbox
@@ -95,7 +133,7 @@ class _IndividualPageState extends State<IndividualPage> {
                 children: [
                   Checkbox.adaptive(
                     value: done,
-                    onChanged: onChanged,
+                    onChanged: onCheckboxChanged,
                     shape: const CircleBorder(),
                   ),
                   Title(
@@ -165,7 +203,7 @@ class _IndividualPageState extends State<IndividualPage> {
                     onChanged: (bool value) {
                       // This is called when the user toggles the switch.
                       setState(() {
-                        doNotification = value;
+                        doNotification = !doNotification;
                         // widget.onValueChanged(value);
                       });
                     },
@@ -199,18 +237,23 @@ class _IndividualPageState extends State<IndividualPage> {
                 child: TextButton(
                   child: const Text("Save"),
                   onPressed: () {
-                    TodoItem item = TodoItem(
-                        itemID: FirebaseFirestore.instance
-                            .collection("items")
-                            .doc()
-                            .id,
-                        itemName: titleController?.text ?? "",
-                        itemDescription: descriptionController?.text,
-                        location: locationController?.text,
-                        link: linkController?.text,
-                        time: selectedDate);
+                    // if the widget item doesnt exist, make a new one, else update
+                    if (widget.item == null) {
+                      TodoItem item = TodoItem(
+                          itemID: FirebaseFirestore.instance
+                              .collection("items")
+                              .doc()
+                              .id,
+                          itemName: titleController?.text ?? "");
 
-                    item.insertItem();
+                      saveFields(item);
+
+                      item.insertItem();
+                    } else {
+                      saveFields(widget.item!);
+
+                      widget.item!.updateItem();
+                    }
 
                     const AlertDialog(title: Text("Saved reminder"));
                     Navigator.pop(context);

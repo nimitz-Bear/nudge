@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../models/item.dart';
+import '../screens/individual_page.dart';
 
 class ToDoTile extends StatelessWidget {
   TodoItem item;
@@ -28,43 +29,47 @@ class ToDoTile extends StatelessWidget {
     //   ),
     // child:
     return Padding(
-      padding: EdgeInsets.all(8),
-      child: Slidable(
-        endActionPane: ActionPane(
-          motion: StretchMotion(),
-          children: [
-            SlidableAction(
-              onPressed: (context) {},
-              icon: Icons.delete,
-              backgroundColor: Colors.red,
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ],
-        ),
-        child: Container(
-          // color: Theme.of(context).colorScheme.secondary,
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.secondary,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
+      padding: const EdgeInsets.all(8),
+      child: GestureDetector(
+        onTap: () => Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => IndividualPage(item: item))),
+        child: Slidable(
+          endActionPane: ActionPane(
+            motion: const StretchMotion(),
             children: [
-              // checkbox
-              Checkbox.adaptive(
-                value: item.done,
-                onChanged: onChanged,
-                shape: const CircleBorder(),
+              SlidableAction(
+                onPressed: (context) {},
+                icon: Icons.delete,
+                backgroundColor: Colors.red,
+                borderRadius: BorderRadius.circular(12),
               ),
-
-              // task name
-              Text(item.itemName,
-                  style: TextStyle(
-                      decoration: item.done
-                          ? TextDecoration.lineThrough
-                          : TextDecoration.none)),
             ],
           ),
-          // ),
+          child: Container(
+            // color: Theme.of(context).colorScheme.secondary,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.secondary,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              children: [
+                // checkbox
+                Checkbox.adaptive(
+                  value: item.done,
+                  onChanged: onChanged,
+                  shape: const CircleBorder(),
+                ),
+
+                // task name
+                Text(item.itemName,
+                    style: TextStyle(
+                        decoration: item.done
+                            ? TextDecoration.lineThrough
+                            : TextDecoration.none)),
+              ],
+            ),
+            // ),
+          ),
         ),
       ),
     );
