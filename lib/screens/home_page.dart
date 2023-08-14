@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
 import 'package:nudge/screens/individual_page.dart';
+import 'package:nudge/widgets/banner.dart';
 import 'package:nudge/widgets/todo_tile.dart';
 
 class HomePage extends StatefulWidget {
@@ -83,7 +84,10 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              // banner
+              ScreenBanner(
+                  backgroundColor: Colors.pink,
+                  child: Center(child: Text("test")),
+                  height: 100),
 
               const SizedBox(height: 50),
               // text saying today and current date
