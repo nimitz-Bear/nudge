@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
       }
 
       items.forEach((element) {
-        print(element.toMap());
+        // print(element.toMap());
       });
     });
 
@@ -84,10 +84,15 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              ScreenBanner(
+              const ScreenBanner(
                   backgroundColor: Colors.pink,
-                  child: Center(child: Text("test")),
-                  height: 100),
+                  backgroundImagePath: "assets/images/gameForest.jpeg",
+                  height: 200,
+                  child: Center(
+                      child: Text(
+                    "test",
+                    style: TextStyle(color: Colors.pink, fontSize: 40),
+                  ))),
 
               const SizedBox(height: 50),
               // text saying today and current date
