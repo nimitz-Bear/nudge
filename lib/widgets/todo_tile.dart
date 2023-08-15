@@ -38,7 +38,9 @@ class ToDoTile extends StatelessWidget {
             motion: const StretchMotion(),
             children: [
               SlidableAction(
-                onPressed: (context) {},
+                onPressed: (context) {
+                  item.deleteItem();
+                },
                 icon: Icons.delete,
                 backgroundColor: Colors.red,
                 borderRadius: BorderRadius.circular(12),

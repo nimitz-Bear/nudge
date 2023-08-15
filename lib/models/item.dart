@@ -89,6 +89,13 @@ class TodoItem {
         .set(toMap())
         .onError((e, _) => print("Error writing document: $e"));
   }
+
+  void deleteItem() async {
+    var collection = FirebaseFirestore.instance.collection('items');
+    await collection.doc(itemID).delete();
+  }
 }
+
+
 
 //TODO: delete function

@@ -29,6 +29,7 @@ class _IndividualPageState extends State<IndividualPage> {
     });
   }
 
+  // if there is an item passed in the constructor, set all the textFields with existing values
   void setupExistingItem() {
     TodoItem item;
 
@@ -56,6 +57,7 @@ class _IndividualPageState extends State<IndividualPage> {
     //TODO: add ui elements for repeating and for labels
   }
 
+  // save the fields values into an item
   void saveFields(TodoItem item) {
     item.itemName = titleController?.text ?? "";
     item.itemDescription = descriptionController?.text;

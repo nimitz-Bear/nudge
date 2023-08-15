@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<bool> list2 = [false, false, false, false, false, false, false];
   List<TodoItem> todayToDoList = [];
 
   // represents the date that the user is looking at on the home page
@@ -93,47 +94,97 @@ class _HomePageState extends State<HomePage> {
                   backgroundImagePath: "assets/images/mountain_range.jpeg",
                   height: 200,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Center(
-                        child: Text(getCurrentDate(),
-                            style: TextStyle(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSecondaryContainer,
-                                fontSize: 30)),
-                      ),
-                      // DayOfTheWeekWidget(date: DateTime.now()),
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Center(
+                          child: Text(getCurrentDate(),
+                              style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSecondaryContainer,
+                                  fontSize: 30)),
+                        ),
+                        SizedBox(
+                          height: 100,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: 7,
+                            itemBuilder: (context, index) {
+                              int inital = -3;
+                              return DayOfTheWeekWidget(
+                                  date: DateTime.now()
+                                      .add(Duration(days: inital + index)),
+                                  isHighlighted: list2[index],
+                                  onUpdate: (index) {
+                                    print(index);
 
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          DayOfTheWeekWidget(
-                              date: DateTime.now()
-                                  .subtract(const Duration(days: 3))),
-                          DayOfTheWeekWidget(
-                              date: DateTime.now()
-                                  .subtract(const Duration(days: 2))),
-                          DayOfTheWeekWidget(
-                              date: DateTime.now()
-                                  .subtract(const Duration(days: 1))),
-                          DayOfTheWeekWidget(
-                              date: DateTime.now(), isHighlighted: true),
-                          DayOfTheWeekWidget(
-                              date:
-                                  DateTime.now().add(const Duration(days: 1))),
-                          DayOfTheWeekWidget(
-                              date:
-                                  DateTime.now().add(const Duration(days: 2))),
-                          DayOfTheWeekWidget(
-                              date:
-                                  DateTime.now().add(const Duration(days: 3))),
-                        ],
-                      ),
-                    ],
-                  )),
+                                    // set everything but hte clicked one to false
+                                    for (var i = 0; i < list2.length; i++) {
+                                      if (i != index) {
+                                        list2[i] = false;
+                                      }
+                                    }
 
+                                    if (list2[index] != true) {
+                                      // switch the bool values
+                                      list2[index] = !list2[index];
+                                    }
+                                    print(list2);
+
+                                    //TODO: tell teh widget which index is clicked???
+                                  },
+                                  index: index);
+                            },
+                          ),
+                        ),
+                        // DayOfTheWeekWidget(date: DateTime.now()),
+
+                        // Row(
+                        //   mainAxisSize: MainAxisSize.min,
+                        //   crossAxisAlignment: CrossAxisAlignment.center,
+                        //   children: [
+                        //     DayOfTheWeekWidget(
+                        //         date: DateTime.now()
+                        //             .subtract(const Duration(days: 3)),
+                        //         onUpdate: (index) {
+                        //           print(index);
+                        //         },
+                        //         index: 0),
+                        //     DayOfTheWeekWidget(
+                        //         date: DateTime.now()
+                        //             .subtract(const Duration(days: 2)),
+                        //         onUpdate: (p0) {},
+                        //         index: 1),
+                        //     DayOfTheWeekWidget(
+                        //       date: DateTime.now()
+                        //           .subtract(const Duration(days: 1)),
+                        //       onUpdate: (p0) {},
+                        //       index: 2,
+                        //     ),
+                        //     DayOfTheWeekWidget(
+                        //       date: DateTime.now(),
+                        //       isHighlighted: true,
+                        //       onUpdate: (p0) {},
+                        //       index: 3,
+                        //     ),
+                        //     DayOfTheWeekWidget(
+                        //       date: DateTime.now().add(const Duration(days: 1)),
+                        //       onUpdate: (p0) {},
+                        //       index: 4,
+                        //     ),
+                        //     DayOfTheWeekWidget(
+                        //       date: DateTime.now().add(const Duration(days: 2)),
+                        //       onUpdate: (p0) {},
+                        //       index: 5,
+                        //     ),
+                        //     DayOfTheWeekWidget(
+                        //       date: DateTime.now().add(const Duration(days: 3)),
+                        //       onUpdate: (p0) {},
+                        //       index: 6,
+                        //     ),
+                        //   ],
+                        // ),
+                      ])),
               const SizedBox(height: 20),
               // text saying today and current date
               const Text("Today"),
@@ -211,4 +262,11 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+class DataModel {
+  String button;
+  bool isSelected;
+
+  DataModel(this.button, this.isSelected);
 }

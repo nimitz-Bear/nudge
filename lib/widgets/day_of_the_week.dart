@@ -1,32 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class DayOfTheWeekWidget extends StatelessWidget {
+class DayOfTheWeekWidget extends StatefulWidget {
   final DateTime date;
-  final bool isHighlighted;
+  bool isHighlighted;
+  final int index;
+  Function(int) onUpdate = (p0) {};
 
-  const DayOfTheWeekWidget(
-      {super.key, required this.date, this.isHighlighted = false});
+  DayOfTheWeekWidget(
+      {super.key,
+      required this.date,
+      required this.onUpdate,
+      this.isHighlighted = false,
+      required this.index});
+  // either index and onUpdate are both null or not null, since they are reliant one ach other
 
+  @override
+  State<DayOfTheWeekWidget> createState() => _DayOfTheWeekWidgetState();
+
+  void setIsHighlighted(bool value) {
+    isHighlighted = value;
+  }
+}
+
+class _DayOfTheWeekWidgetState extends State<DayOfTheWeekWidget> {
   @override
   Widget build(BuildContext context) {
     final TextStyle style = TextStyle(
         fontSize: 20,
-        color: isHighlighted
+        color: widget.isHighlighted
             ? Theme.of(context).colorScheme.tertiary
             : Theme.of(context).colorScheme.onSecondaryContainer);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
-        onTap: () => print("tapped ${DateFormat('dd').format(date)}"),
+        onTap: () {
+          print("tapped ${DateFormat('dd').format(widget.date)}");
+          widget.onUpdate(widget.index);
+        },
         child: Column(
           children: [
-            Text(DateFormat('E').format(date)[0], style: style),
+            Text(DateFormat('E').format(widget.date)[0], style: style),
             const SizedBox(height: 5),
             Container(
               decoration: BoxDecoration(
-                  color: isHighlighted
+                  color: widget.isHighlighted
                       ? Theme.of(context)
                           .colorScheme
                           .secondaryContainer
@@ -36,7 +55,7 @@ class DayOfTheWeekWidget extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(4.0),
                 child: Text(
-                  DateFormat('dd').format(date),
+                  DateFormat('dd').format(widget.date),
                   style: style,
                 ),
               ),
