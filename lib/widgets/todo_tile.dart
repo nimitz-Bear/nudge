@@ -5,9 +5,9 @@ import '../models/item.dart';
 import '../screens/individual_page.dart';
 
 class ToDoTile extends StatelessWidget {
-  TodoItem item;
-  Function(bool?)? onChanged;
-  Function(BuildContext)? deleteFunction;
+  final TodoItem item;
+  final Function(bool?)? onChanged;
+  final Function(BuildContext)? deleteFunction;
 
   ToDoTile(
       {super.key,
@@ -17,17 +17,6 @@ class ToDoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return Slidable(
-    //   endActionPane: ActionPane(
-    //     motion: StretchMotion(),
-    //     children: [
-    //       SlidableAction(
-    //           onPressed: deleteFunction,
-    //           icon: Icons.delete,
-    //           backgroundColor: Colors.red),
-    //     ],
-    //   ),
-    // child:
     return Padding(
       padding: const EdgeInsets.all(8),
       child: GestureDetector(
@@ -62,6 +51,7 @@ class ToDoTile extends StatelessWidget {
                   shape: const CircleBorder(),
                 ),
 
+                // TODO: change this to a textfield
                 // task name
                 Text(item.itemName,
                     style: TextStyle(

@@ -7,6 +7,8 @@ import 'package:nudge/widgets/banner.dart';
 import 'package:nudge/widgets/day_of_the_week.dart';
 import 'package:nudge/widgets/todo_tile.dart';
 
+import '../widgets/todo_list.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -15,16 +17,28 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<bool> list2 = [false, false, false, false, false, false, false];
+  List<bool> selectedDay = [false, false, false, false, false, false, false];
   List<TodoItem> todayToDoList = [];
+  List<TodoItem> tommorowToDoList = [];
 
-  // represents the date that the user is looking at on the home page
-  DateTime viewedDate = DateTime.now();
-
-  void deleteTask(TodoItem item, int index) {
+  void deleteTask(List<TodoItem> items, int index) {
     setState(() {
-      todayToDoList.removeAt(index);
+      items.removeAt(index);
     });
+  }
+
+  dynamic onDayClicked(int index) {
+    // set everything but hte clicked one to false
+    for (var i = 0; i < selectedDay.length; i++) {
+      if (i != index) {
+        selectedDay[i] = false;
+      }
+    }
+
+    if (selectedDay[index] != true) {
+      // switch the bool values
+      selectedDay[index] = !selectedDay[index];
+    }
   }
 
   // get all the items from firebase, corresponding to the input date
@@ -48,6 +62,13 @@ class _HomePageState extends State<HomePage> {
         // print(element);
       }
 
+      // items.forEach((element) {
+      //   print(element.time!.isAtSameMomentAs(startOfDay));
+      //   print(element.itemName);
+      //   print(element.time);
+      //   print(startOfDay);
+      //   print(endOfDay);
+      // });
       List<TodoItem> itemsToRemove = [];
 
       // find all the indecides that are not relevant to today
@@ -56,7 +77,8 @@ class _HomePageState extends State<HomePage> {
         if (element.time != null) {
           // if the time is not between the start and end of day, don't incldue it in the list
           if (!(element.time!.isAfter(startOfDay) &&
-              element.time!.isBefore(endOfDay))) {
+                  element.time!.isBefore(endOfDay)) &&
+              !element.time!.isAtSameMomentAs(startOfDay)) {
             itemsToRemove.add(element);
           }
         }
@@ -81,18 +103,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   /// method to get the current name of the month and day
-  String getCurrentDate() {
-    var now = DateTime.now();
+  String getCurrentDate(DateTime date) {
+    // var now = DateTime.now();
     var formatter = DateFormat('EEEE, MMMM dd');
-    String formattedDate = formatter.format(now);
+    String formattedDate = formatter.format(date);
     return formattedDate;
   }
 
   @override
   Widget build(BuildContext context) {
+    //TODO: change this to a StreamBuilder?
     void refreshItems() async {
       todayToDoList = await getItemsForDay(DateTime.now());
+      tommorowToDoList =
+          await getItemsForDay(DateTime.now().add(const Duration(days: 1)));
       setState(() {});
+      // print(tommorowToDoList);
     }
 
     refreshItems();
@@ -118,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Center(
-                          child: Text(getCurrentDate(),
+                          child: Text(getCurrentDate(DateTime.now()),
                               style: TextStyle(
                                   color: Theme.of(context)
                                       .colorScheme
@@ -137,24 +163,9 @@ class _HomePageState extends State<HomePage> {
                                 return DayOfTheWeekWidget(
                                     date: DateTime.now()
                                         .add(Duration(days: inital + index)),
-                                    isHighlighted: list2[index],
+                                    isHighlighted: selectedDay[index],
                                     onUpdate: (index) {
-                                      // print(index);
-
-                                      // set everything but hte clicked one to false
-                                      for (var i = 0; i < list2.length; i++) {
-                                        if (i != index) {
-                                          list2[i] = false;
-                                        }
-                                      }
-
-                                      if (list2[index] != true) {
-                                        // switch the bool values
-                                        list2[index] = !list2[index];
-                                      }
-                                      // print(list2);
-
-                                      //TODO: tell teh widget which index is clicked???
+                                      onDayClicked(index);
                                     },
                                     index: index);
                               },
@@ -181,31 +192,38 @@ class _HomePageState extends State<HomePage> {
                         onChanged: (value) =>
                             checkBoxChanged(value, todayToDoList[index]),
                         deleteFunction: (context) =>
-                            deleteTask(todayToDoList[index], index),
+                            deleteTask(todayToDoList, index),
                       );
                     },
                   ),
                 ),
               ),
 
-              // // list view for tommorow
-              // const Text("Tommorow"),
-              // Expanded(
-              //   child: SizedBox(
-              //     height: 200.0,
-              //     child: ListView.builder(
-              //       itemCount: tommorowToDoList.length,
-              //       itemBuilder: (context, index) {
-              //         return ToDoTile(
-              //             item: tommorowToDoList[index],
-              //             onChanged: (value) =>
-              //                 checkBoxChanged(value, tommorowToDoList[index]));
-              //       },
-              //     ),
-              //   ),
-              // ),
+              // TODO: list view for tommorow
+              Text("Tommorow"),
+              // TodoList(
+              //     items: tommorowToDoList,
+              //     checkBoxChanged: checkBoxChanged,
+              //     deleteTask: deleteTask),
+              Expanded(
+                child: SizedBox(
+                  height: 200.0,
+                  child: ListView.builder(
+                    itemCount: tommorowToDoList.length,
+                    itemBuilder: (context, index) {
+                      return ToDoTile(
+                        item: tommorowToDoList[index],
+                        onChanged: (value) =>
+                            checkBoxChanged(value, tommorowToDoList[index]),
+                        deleteFunction: (context) =>
+                            deleteTask(tommorowToDoList, index),
+                      );
+                    },
+                  ),
+                ),
+              ),
 
-              // // list view for the week
+              // TOOD: list view for the week
               // const Text("Week"),
               // Expanded(
               //   child: SizedBox(
@@ -239,11 +257,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
-
-class DataModel {
-  String button;
-  bool isSelected;
-
-  DataModel(this.button, this.isSelected);
 }
