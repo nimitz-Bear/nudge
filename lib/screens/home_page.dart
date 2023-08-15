@@ -27,7 +27,13 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Future<List<TodoItem>> getItems() async {
+  // get all the items from firebase, corresponding to the input date
+  Future<List<TodoItem>> getItemsForDay(DateTime date) async {
+    DateTime startOfDay =
+        DateTime(date.year, date.month, date.day); // Set time to midnight
+    DateTime endOfDay = DateTime(date.year, date.month, date.day, 23, 59,
+        59); // Set time to just before midnight
+
     List<TodoItem> items = [];
 
     await FirebaseFirestore.instance.collection("items").get().then((value) {
@@ -42,9 +48,24 @@ class _HomePageState extends State<HomePage> {
         // print(element);
       }
 
-      items.forEach((element) {
-        // print(element.toMap());
-      });
+      List<TodoItem> itemsToRemove = [];
+
+      // find all the indecides that are not relevant to today
+      for (var element in items) {
+        // print(element.time);
+        if (element.time != null) {
+          // if the time is not between the start and end of day, don't incldue it in the list
+          if (!(element.time!.isAfter(startOfDay) &&
+              element.time!.isBefore(endOfDay))) {
+            itemsToRemove.add(element);
+          }
+        }
+      }
+
+      // remove all irrelevant elements
+      for (var element in itemsToRemove) {
+        items.remove(element);
+      }
     });
 
     // var test = doc.data();
@@ -70,7 +91,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     void refreshItems() async {
-      todayToDoList = await getItems();
+      todayToDoList = await getItemsForDay(DateTime.now());
       setState(() {});
     }
 
@@ -118,7 +139,7 @@ class _HomePageState extends State<HomePage> {
                                         .add(Duration(days: inital + index)),
                                     isHighlighted: list2[index],
                                     onUpdate: (index) {
-                                      print(index);
+                                      // print(index);
 
                                       // set everything but hte clicked one to false
                                       for (var i = 0; i < list2.length; i++) {
@@ -131,7 +152,7 @@ class _HomePageState extends State<HomePage> {
                                         // switch the bool values
                                         list2[index] = !list2[index];
                                       }
-                                      print(list2);
+                                      // print(list2);
 
                                       //TODO: tell teh widget which index is clicked???
                                     },
@@ -140,53 +161,6 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                         ),
-                        // DayOfTheWeekWidget(date: DateTime.now()),
-
-                        // Row(
-                        //   mainAxisSize: MainAxisSize.min,
-                        //   crossAxisAlignment: CrossAxisAlignment.center,
-                        //   children: [
-                        //     DayOfTheWeekWidget(
-                        //         date: DateTime.now()
-                        //             .subtract(const Duration(days: 3)),
-                        //         onUpdate: (index) {
-                        //           print(index);
-                        //         },
-                        //         index: 0),
-                        //     DayOfTheWeekWidget(
-                        //         date: DateTime.now()
-                        //             .subtract(const Duration(days: 2)),
-                        //         onUpdate: (p0) {},
-                        //         index: 1),
-                        //     DayOfTheWeekWidget(
-                        //       date: DateTime.now()
-                        //           .subtract(const Duration(days: 1)),
-                        //       onUpdate: (p0) {},
-                        //       index: 2,
-                        //     ),
-                        //     DayOfTheWeekWidget(
-                        //       date: DateTime.now(),
-                        //       isHighlighted: true,
-                        //       onUpdate: (p0) {},
-                        //       index: 3,
-                        //     ),
-                        //     DayOfTheWeekWidget(
-                        //       date: DateTime.now().add(const Duration(days: 1)),
-                        //       onUpdate: (p0) {},
-                        //       index: 4,
-                        //     ),
-                        //     DayOfTheWeekWidget(
-                        //       date: DateTime.now().add(const Duration(days: 2)),
-                        //       onUpdate: (p0) {},
-                        //       index: 5,
-                        //     ),
-                        //     DayOfTheWeekWidget(
-                        //       date: DateTime.now().add(const Duration(days: 3)),
-                        //       onUpdate: (p0) {},
-                        //       index: 6,
-                        //     ),
-                        //   ],
-                        // ),
                       ])),
               const SizedBox(height: 20),
               // text saying today and current date

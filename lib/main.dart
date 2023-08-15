@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         colorScheme: const ColorScheme(
             brightness: Brightness.light,
             primary: Colors.black, //TODO change this back to white
-            secondaryContainer: Colors.white,
+            // secondaryContainer: Colors.white,
             onPrimary: Color(0xFFfdb400),
             secondary: Color(0xFFfdb400),
             onSecondary: Color(0xFFFFFFFF), // can also be whiteish
@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
 
         //text styling
         textTheme: const TextTheme(
-          titleMedium: TextStyle(fontSize: 32.0, color: Colors.white),
+          titleMedium: TextStyle(fontSize: 32.0, color: Colors.pink),
           displayLarge: TextStyle(
               fontSize: 72.0, fontWeight: FontWeight.bold, color: Colors.black),
           displayMedium: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),

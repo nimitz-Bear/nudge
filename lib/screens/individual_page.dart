@@ -165,6 +165,9 @@ class _IndividualPageState extends State<IndividualPage> {
                   const SizedBox(width: 10),
                   Expanded(
                     child: TextFormField(
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.tertiary,
+                          fontSize: 20),
                       decoration: const InputDecoration(
                           hintText: "Description ...",
                           border: InputBorder.none),
@@ -219,10 +222,16 @@ class _IndividualPageState extends State<IndividualPage> {
 
               TextFormField(
                   controller: locationController,
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.tertiary,
+                      fontSize: 20),
                   decoration: const InputDecoration(
                       hintText: "Location ...", border: InputBorder.none)),
               TextFormField(
                   controller: linkController,
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.tertiary,
+                      fontSize: 20),
                   decoration: const InputDecoration(
                       hintText: "Link ...", border: InputBorder.none)),
               Divider(color: Theme.of(context).colorScheme.tertiary),
