@@ -35,17 +35,18 @@ class MyApp extends StatelessWidget {
           selectionHandleColor: Color(0xFF3f6a85),
         ),
         brightness: Brightness.light,
-        primarySwatch: MaterialColor(0xFF3f6a85, color),
+        primarySwatch: const MaterialColor(0xFF3f6a85, color),
         // fff9fe whiteish 60
         // fdb400 yellowish 30 (text)
         // 3f6a85 blue-grey 10 (titles, important buttons)
 
         colorScheme: const ColorScheme(
             brightness: Brightness.light,
-            primary: Colors.black,
+            primary: Colors.black, //TODO change this back to white
+            secondaryContainer: Colors.white,
             onPrimary: Color(0xFFfdb400),
             secondary: Color(0xFFfdb400),
-            onSecondary: Color(0xFF3f6a85), // can also be whiteish
+            onSecondary: Color(0xFFFFFFFF), // can also be whiteish
             tertiary: Color(0xFF3f6a85),
             onTertiary: Color(0xFFfdb400),
             error: Colors.black,
@@ -59,6 +60,7 @@ class MyApp extends StatelessWidget {
 
         //text styling
         textTheme: const TextTheme(
+          titleMedium: TextStyle(fontSize: 32.0, color: Colors.white),
           displayLarge: TextStyle(
               fontSize: 72.0, fontWeight: FontWeight.bold, color: Colors.black),
           displayMedium: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
 import 'package:nudge/screens/individual_page.dart';
 import 'package:nudge/widgets/banner.dart';
+import 'package:nudge/widgets/day_of_the_week.dart';
 import 'package:nudge/widgets/todo_tile.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,6 +16,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<TodoItem> todayToDoList = [];
+
+  // represents the date that the user is looking at on the home page
+  DateTime viewedDate = DateTime.now();
 
   void deleteTask(TodoItem item, int index) {
     setState(() {
@@ -57,7 +61,7 @@ class _HomePageState extends State<HomePage> {
   /// method to get the current name of the month and day
   String getCurrentDate() {
     var now = DateTime.now();
-    var formatter = DateFormat('MMMM dd');
+    var formatter = DateFormat('EEEE, MMMM dd');
     String formattedDate = formatter.format(now);
     return formattedDate;
   }
@@ -84,19 +88,55 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const ScreenBanner(
+              ScreenBanner(
                   backgroundColor: Colors.pink,
-                  backgroundImagePath: "assets/images/gameForest.jpeg",
+                  backgroundImagePath: "assets/images/mountain_range.jpeg",
                   height: 200,
-                  child: Center(
-                      child: Text(
-                    "test",
-                    style: TextStyle(color: Colors.pink, fontSize: 40),
-                  ))),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Center(
+                        child: Text(getCurrentDate(),
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSecondaryContainer,
+                                fontSize: 30)),
+                      ),
+                      // DayOfTheWeekWidget(date: DateTime.now()),
 
-              const SizedBox(height: 50),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          DayOfTheWeekWidget(
+                              date: DateTime.now()
+                                  .subtract(const Duration(days: 3))),
+                          DayOfTheWeekWidget(
+                              date: DateTime.now()
+                                  .subtract(const Duration(days: 2))),
+                          DayOfTheWeekWidget(
+                              date: DateTime.now()
+                                  .subtract(const Duration(days: 1))),
+                          DayOfTheWeekWidget(
+                              date: DateTime.now(), isHighlighted: true),
+                          DayOfTheWeekWidget(
+                              date:
+                                  DateTime.now().add(const Duration(days: 1))),
+                          DayOfTheWeekWidget(
+                              date:
+                                  DateTime.now().add(const Duration(days: 2))),
+                          DayOfTheWeekWidget(
+                              date:
+                                  DateTime.now().add(const Duration(days: 3))),
+                        ],
+                      ),
+                    ],
+                  )),
+
+              const SizedBox(height: 20),
               // text saying today and current date
-              Text("Today, ${getCurrentDate()}"),
+              const Text("Today"),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Divider(color: Theme.of(context).colorScheme.tertiary),
@@ -154,27 +194,17 @@ class _HomePageState extends State<HomePage> {
               //   ),
               // ),
 
+              // add task button
               ElevatedButton(
                 style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(
                         Theme.of(context).colorScheme.tertiary)),
                 onPressed: () {
-                  // item =
-                  //     TodoItem(itemID: "test", itemName: "make notes for math");
-
-                  // item.insertItem();
-                  // setState(() {
-                  //   todayToDoList.add(item);
-                  // });
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => IndividualPage()));
+                      builder: (context) => const IndividualPage()));
                 },
                 child: const Text('Add'),
               ),
-
-              // add task button
-
-              // view upcoming buttons
             ],
           ),
         ),
