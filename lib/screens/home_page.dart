@@ -106,35 +106,38 @@ class _HomePageState extends State<HomePage> {
                         ),
                         SizedBox(
                           height: 100,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: 7,
-                            itemBuilder: (context, index) {
-                              int inital = -3;
-                              return DayOfTheWeekWidget(
-                                  date: DateTime.now()
-                                      .add(Duration(days: inital + index)),
-                                  isHighlighted: list2[index],
-                                  onUpdate: (index) {
-                                    print(index);
+                          child: Center(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount: 7,
+                              itemBuilder: (context, index) {
+                                int inital = -3;
+                                return DayOfTheWeekWidget(
+                                    date: DateTime.now()
+                                        .add(Duration(days: inital + index)),
+                                    isHighlighted: list2[index],
+                                    onUpdate: (index) {
+                                      print(index);
 
-                                    // set everything but hte clicked one to false
-                                    for (var i = 0; i < list2.length; i++) {
-                                      if (i != index) {
-                                        list2[i] = false;
+                                      // set everything but hte clicked one to false
+                                      for (var i = 0; i < list2.length; i++) {
+                                        if (i != index) {
+                                          list2[i] = false;
+                                        }
                                       }
-                                    }
 
-                                    if (list2[index] != true) {
-                                      // switch the bool values
-                                      list2[index] = !list2[index];
-                                    }
-                                    print(list2);
+                                      if (list2[index] != true) {
+                                        // switch the bool values
+                                        list2[index] = !list2[index];
+                                      }
+                                      print(list2);
 
-                                    //TODO: tell teh widget which index is clicked???
-                                  },
-                                  index: index);
-                            },
+                                      //TODO: tell teh widget which index is clicked???
+                                    },
+                                    index: index);
+                              },
+                            ),
                           ),
                         ),
                         // DayOfTheWeekWidget(date: DateTime.now()),
