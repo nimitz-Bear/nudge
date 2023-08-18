@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
@@ -20,6 +21,12 @@ class _HomePageState extends State<HomePage> {
   List<bool> selectedDay = [false, false, false, false, false, false, false];
   List<TodoItem> todayToDoList = [];
   List<TodoItem> tommorowToDoList = [];
+
+  final user = FirebaseAuth.instance.currentUser!;
+
+  void signUserOut() {
+    FirebaseAuth.instance.signOut();
+  }
 
   void deleteTask(List<TodoItem> items, int index) {
     setState(() {
@@ -62,13 +69,13 @@ class _HomePageState extends State<HomePage> {
         // print(element);
       }
 
-      // items.forEach((element) {
-      //   print(element.time!.isAtSameMomentAs(startOfDay));
-      //   print(element.itemName);
-      //   print(element.time);
-      //   print(startOfDay);
-      //   print(endOfDay);
-      // });
+      items.forEach((element) {
+        //   print(element.time!.isAtSameMomentAs(startOfDay));
+        //   print(element.itemName);
+        print(element.time);
+        //   print(startOfDay);
+        //   print(endOfDay);
+      });
       List<TodoItem> itemsToRemove = [];
 
       // find all the indecides that are not relevant to today
@@ -110,6 +117,18 @@ class _HomePageState extends State<HomePage> {
     return formattedDate;
   }
 
+  // @override
+  // void initState() {
+  //   void test() async {
+  //     tommorowToDoList =
+  //         await getItemsForDay(DateTime.now().add(const Duration(days: 1)));
+  //   }
+
+  //   test();
+
+  //   super.initState();
+  // }
+
   @override
   Widget build(BuildContext context) {
     //TODO: change this to a StreamBuilder?
@@ -117,7 +136,8 @@ class _HomePageState extends State<HomePage> {
       todayToDoList = await getItemsForDay(DateTime.now());
       tommorowToDoList =
           await getItemsForDay(DateTime.now().add(const Duration(days: 1)));
-      setState(() {});
+
+      if (this.mounted) setState(() {});
       // print(tommorowToDoList);
     }
 
@@ -128,7 +148,8 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Theme.of(context).colorScheme.tertiary,
         title: const Text("TO DO"),
         actions: [
-          IconButton(onPressed: () => {}, icon: const Icon(Icons.menu))
+          IconButton(
+              onPressed: () => {signUserOut()}, icon: const Icon(Icons.logout))
         ],
       ),
       body: SafeArea(
@@ -200,28 +221,14 @@ class _HomePageState extends State<HomePage> {
               ),
 
               // TODO: list view for tommorow
-              Text("Tommorow"),
-              // TodoList(
-              //     items: tommorowToDoList,
-              //     checkBoxChanged: checkBoxChanged,
-              //     deleteTask: deleteTask),
-              Expanded(
-                child: SizedBox(
-                  height: 200.0,
-                  child: ListView.builder(
-                    itemCount: tommorowToDoList.length,
-                    itemBuilder: (context, index) {
-                      return ToDoTile(
-                        item: tommorowToDoList[index],
-                        onChanged: (value) =>
-                            checkBoxChanged(value, tommorowToDoList[index]),
-                        deleteFunction: (context) =>
-                            deleteTask(tommorowToDoList, index),
-                      );
-                    },
-                  ),
-                ),
-              ),
+              const Text("Tommorow"),
+
+              // TODO: because it's in the build function, refreshing the tommorow's item list
+              // causes the drag reordering to be undone
+              TodoList(
+                  items: tommorowToDoList,
+                  checkBoxChanged: checkBoxChanged,
+                  deleteTask: deleteTask),
 
               // TOOD: list view for the week
               // const Text("Week"),

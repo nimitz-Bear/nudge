@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:nudge/screens/auth_page.dart';
 import 'screens/home_page.dart';
 import 'screens/login_page.dart';
 
@@ -60,7 +61,7 @@ class MyApp extends StatelessWidget {
 
         //text styling
         textTheme: const TextTheme(
-          titleMedium: TextStyle(fontSize: 32.0, color: Colors.pink),
+          // titleMedium: TextStyle(fontSize: 32.0, color: Colors.pink),
           displayLarge: TextStyle(
               fontSize: 72.0, fontWeight: FontWeight.bold, color: Colors.black),
           displayMedium: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
@@ -69,7 +70,8 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       // home: LoginPage(),
-      home: HomePage(),
+      home: AuthPage(),
+      // home: HomePage(),
     );
   }
 }

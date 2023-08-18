@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/item.dart';
 import 'todo_tile.dart';
 
-class TodoList extends StatelessWidget {
+class TodoList extends StatefulWidget {
   final List<TodoItem> items;
   final dynamic Function(bool?, TodoItem item) checkBoxChanged;
   final Function(List<TodoItem> items, int index) deleteTask;
@@ -15,17 +15,33 @@ class TodoList extends StatelessWidget {
       required this.deleteTask});
 
   @override
+  State<TodoList> createState() => _TodoListState();
+}
+
+class _TodoListState extends State<TodoList> {
+  @override
   Widget build(BuildContext context) {
     return Expanded(
       child: SizedBox(
         height: 200.0,
-        child: ListView.builder(
-          itemCount: items.length,
+        child: ReorderableListView.builder(
+          onReorder: (oldIndex, newIndex) {
+            setState(() {
+              if (newIndex > oldIndex) newIndex--;
+
+              final item = widget.items.removeAt(oldIndex);
+              widget.items.insert(newIndex, item);
+            });
+          },
+          itemCount: widget.items.length,
           itemBuilder: (context, index) {
             return ToDoTile(
-              item: items[index],
-              onChanged: (value) => checkBoxChanged(value, items[index]),
-              deleteFunction: (context) => deleteTask(items, index),
+              key: ValueKey(widget.items[index].itemID),
+              item: widget.items[index],
+              onChanged: (value) =>
+                  widget.checkBoxChanged(value, widget.items[index]),
+              deleteFunction: (context) =>
+                  widget.deleteTask(widget.items, index),
             );
           },
         ),
