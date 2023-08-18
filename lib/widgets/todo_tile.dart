@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
 
 import '../models/item.dart';
 import '../screens/individual_page.dart';
@@ -51,13 +52,30 @@ class ToDoTile extends StatelessWidget {
                   shape: const CircleBorder(),
                 ),
 
-                // TODO: change this to a textfield
                 // task name
-                Text(item.itemName,
-                    style: TextStyle(
-                        decoration: item.done
-                            ? TextDecoration.lineThrough
-                            : TextDecoration.none)),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(item.itemName, // TODO: change this to a textfield
+                        style: TextStyle(
+                            decoration: item.done
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none)),
+                    Text(
+                        DateFormat('MMM d HH:mm', 'en_US').format(
+                          item.time ??
+                              DateTime(DateTime.now().year,
+                                  DateTime.now().month, DateTime.now().day),
+                        ),
+                        style: TextStyle(
+                            fontSize: 10.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[600],
+                            decoration: item.done
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none)),
+                  ],
+                )
               ],
             ),
             // ),

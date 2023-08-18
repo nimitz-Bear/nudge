@@ -20,6 +20,7 @@ class _IndividualPageState extends State<IndividualPage> {
 
   bool done = false;
   bool doNotification = false;
+  DateTime now = DateTime.now();
   DateTime selectedDate = DateTime.now();
   var outputFormat = DateFormat('MMM dd HH:mm');
 
@@ -108,6 +109,7 @@ class _IndividualPageState extends State<IndividualPage> {
   @override
   void initState() {
     setupExistingItem();
+    selectedDate = DateTime(now.year, now.month, now.day);
     super.initState();
   }
   // TODO: refactor so that only the date/time picker is Stateful

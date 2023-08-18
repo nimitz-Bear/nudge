@@ -69,13 +69,13 @@ class _HomePageState extends State<HomePage> {
         // print(element);
       }
 
-      items.forEach((element) {
-        //   print(element.time!.isAtSameMomentAs(startOfDay));
-        //   print(element.itemName);
-        print(element.time);
-        //   print(startOfDay);
-        //   print(endOfDay);
-      });
+      // items.forEach((element) {
+      //   print(element.time!.isAtSameMomentAs(startOfDay));
+      //   print(element.itemName);
+      // print(element.time);
+      //   print(startOfDay);
+      //   print(endOfDay);
+      // });
       List<TodoItem> itemsToRemove = [];
 
       // find all the indecides that are not relevant to today
