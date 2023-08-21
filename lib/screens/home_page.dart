@@ -67,8 +67,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ItemsProvider().getList(DateTime.now());
-      // refreshItems();
-      // print("t ${tommorowToDoList.length}");
     });
   }
 

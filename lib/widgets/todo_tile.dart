@@ -27,6 +27,7 @@ class _ToDoTileState extends State<ToDoTile> {
   @override
   void initState() {
     titleController.text = widget.item.itemName;
+
     super.initState();
   }
 
@@ -56,7 +57,6 @@ class _ToDoTileState extends State<ToDoTile> {
             ],
           ),
           child: Container(
-            // color: Theme.of(context).colorScheme.secondary,
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.secondary,
               borderRadius: BorderRadius.circular(8),
@@ -72,17 +72,32 @@ class _ToDoTileState extends State<ToDoTile> {
 
                 // task name
                 Column(
+                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Expanded(
-                    Text(widget.item.itemName,
-                        // controller:
-                        // titleController, // TODO: change this to a textfield
-                        style: TextStyle(
-                            decoration: widget.item.done
-                                ? TextDecoration.lineThrough
-                                : TextDecoration.none)),
+                    // Expanded( // FIXME: adding Expanded this causes an error
+                    //   child: Text(widget.item.itemName,
+                    //       overflow: TextOverflow.ellipsis,
+                    //       // TODO: change this to a textfield
+                    //       style: TextStyle(
+                    //           decoration: widget.item.done
+                    //               ? TextDecoration.lineThrough
+                    //               : TextDecoration.none)),
                     // ),
+                    SizedBox(
+                      width: 250,
+                      height: 30,
+                      child: TextFormField(
+                        onFieldSubmitted: (value) {
+                          widget.item.itemName = titleController.text;
+                          widget.item.updateItem();
+                        },
+                        controller: titleController,
+                        maxLength: 30,
+                        decoration: const InputDecoration(
+                            border: InputBorder.none, counterText: ''),
+                      ),
+                    ),
                     Text(
                         DateFormat('MMM d HH:mm', 'en_US').format(
                           widget.item.time ??
@@ -100,7 +115,6 @@ class _ToDoTileState extends State<ToDoTile> {
                 )
               ],
             ),
-            // ),
           ),
         ),
       ),
