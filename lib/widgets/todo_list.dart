@@ -48,6 +48,7 @@ class _TodoListState extends State<TodoList> {
     positionlessItems.forEach((element) {
       element.position = widget.items.length;
       widget.items.add(element);
+      print("new pos ${element.position}");
       element.updateItem();
       print(element.toMap());
     });

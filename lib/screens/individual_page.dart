@@ -1,8 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
 import 'package:nudge/providers/items_provider.dart';
+
+import '../widgets/dialog_utils.dart';
 
 class IndividualPage extends StatefulWidget {
   final TodoItem? item;
@@ -14,16 +15,18 @@ class IndividualPage extends StatefulWidget {
 }
 
 class _IndividualPageState extends State<IndividualPage> {
-  TextEditingController? titleController = TextEditingController();
-  TextEditingController? descriptionController = TextEditingController();
-  TextEditingController? locationController = TextEditingController();
-  TextEditingController? linkController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController locationController = TextEditingController();
+  TextEditingController linkController = TextEditingController();
 
   bool done = false;
   bool doNotification = false;
   DateTime now = DateTime.now();
   DateTime selectedDate = DateTime.now();
-  var outputFormat = DateFormat('MMM dd HH:mm');
+  var outputFormat = DateFormat('MMMM dd');
+  var timeFormat = DateFormat.Hm();
+  bool showTime = false;
 
   void onCheckboxChanged(bool? value) {
     setState(() {
@@ -43,10 +46,10 @@ class _IndividualPageState extends State<IndividualPage> {
     }
 
     // string values
-    titleController?.text = item.itemName;
-    descriptionController?.text = item.itemDescription ?? "";
-    locationController?.text = item.location ?? "";
-    linkController?.text = item.link ?? "";
+    titleController.text = item.itemName;
+    descriptionController.text = item.itemDescription ?? "";
+    locationController.text = item.location ?? "";
+    linkController.text = item.link ?? "";
 
     // time
     selectedDate = item.time ?? DateTime.now();
@@ -60,50 +63,13 @@ class _IndividualPageState extends State<IndividualPage> {
 
   // save the fields values into an item
   void saveFields(TodoItem item) {
-    item.itemName = titleController?.text ?? "";
-    item.itemDescription = descriptionController?.text;
-    item.location = locationController?.text;
-    item.link = linkController?.text;
+    item.itemName = titleController.text ?? "";
+    item.itemDescription = descriptionController.text;
+    item.location = locationController.text;
+    item.link = linkController.text;
     item.time = selectedDate;
     item.isReminder = doNotification;
     item.done = done;
-  }
-
-  Future<DateTime?> showDateTimePicker({
-    required BuildContext context,
-    DateTime? initialDate,
-    DateTime? firstDate,
-    DateTime? lastDate,
-  }) async {
-    initialDate ??= DateTime.now();
-    firstDate ??= initialDate.subtract(const Duration(days: 365 * 100));
-    lastDate ??= firstDate.add(const Duration(days: 365 * 200));
-
-    final DateTime? selectedDate = await showDatePicker(
-      context: context,
-      initialDate: initialDate,
-      firstDate: firstDate,
-      lastDate: lastDate,
-    );
-
-    if (selectedDate == null) return null;
-
-    if (!context.mounted) return selectedDate;
-
-    final TimeOfDay? selectedTime = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(selectedDate),
-    );
-
-    return selectedTime == null
-        ? selectedDate
-        : DateTime(
-            selectedDate.year,
-            selectedDate.month,
-            selectedDate.day,
-            selectedTime.hour,
-            selectedTime.minute,
-          );
   }
 
   @override
@@ -180,14 +146,18 @@ class _IndividualPageState extends State<IndividualPage> {
                   ),
                 ],
               ),
-
               Row(
                 children: [
-                  const Icon(Icons.access_time_outlined),
+                  const Icon(Icons.calendar_month_outlined),
                   TextButton(
                     onPressed: () async {
-                      DateTime? test =
-                          await showDateTimePicker(context: context);
+                      DateTime now = DateTime.now();
+
+                      DateTime? test = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime(now.year, now.month, now.day),
+                          firstDate: now,
+                          lastDate: DateTime(2101));
 
                       setState(() {
                         if (test != null) selectedDate = test;
@@ -199,11 +169,45 @@ class _IndividualPageState extends State<IndividualPage> {
                   ),
                 ],
               ),
+
+              showTime
+                  ? Row(
+                      children: [
+                        const Icon(Icons.access_time_filled),
+                        TextButton(
+                            onPressed: () async {
+                              TimeOfDay? chosenTime = await showTimePicker(
+                                  context: context,
+                                  initialTime: TimeOfDay.now());
+
+                              if (chosenTime != null) {
+                                setState(() {
+                                  selectedDate = DateTime(
+                                      selectedDate.year,
+                                      selectedDate.month,
+                                      selectedDate.day,
+                                      chosenTime.hour,
+                                      chosenTime.minute);
+                                });
+                              }
+                            },
+                            child: Text(timeFormat.format(selectedDate),
+                                style: TextStyle(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .tertiary)))
+                      ],
+                    )
+                  : OutlinedButton(
+                      child: Text("Add time"),
+                      onPressed: () => setState(() {
+                            showTime = true;
+                          })),
               Row(
                 children: [
-                  const Icon(Icons.alarm),
+                  Icon(doNotification ? Icons.alarm : Icons.alarm_off),
                   const SizedBox(width: 10),
-                  const Text("Notification"),
+                  const Text("Remind Me"),
                   Switch(
                     // This bool value toggles the switch.
                     value: doNotification,
@@ -251,11 +255,16 @@ class _IndividualPageState extends State<IndividualPage> {
                 child: TextButton(
                   child: const Text("Save"),
                   onPressed: () {
+                    if (titleController.text.isEmpty) {
+                      showErrorDialog(context, "Title of task can't be empty!");
+                      return;
+                    }
+
                     // TODO: move this to the ItemsProvider
                     // if the widget item doesnt exist, make a new one, else update
                     if (widget.item == null) {
                       TodoItem item = TodoItem(
-                          itemID: "", itemName: titleController?.text ?? "");
+                          itemID: "", itemName: titleController.text ?? "");
 
                       saveFields(item);
 
@@ -265,8 +274,7 @@ class _IndividualPageState extends State<IndividualPage> {
                       saveFields(widget.item!);
 
                       widget.item!.updateItem();
-                      ItemsProvider()
-                          .getList(widget.item?.time ?? DateTime.now());
+                      ItemsProvider().getList(DateTime.now());
                     }
 
                     const AlertDialog(title: Text("Saved reminder"));

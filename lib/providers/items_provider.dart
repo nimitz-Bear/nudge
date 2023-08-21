@@ -64,6 +64,7 @@ class ItemsProvider with ChangeNotifier {
 
     for (int i = 0; i < _todayToDoList.length; i++) {
       _todayToDoList[i].position = i;
+      print(_todayToDoList[i].toMap());
       _todayToDoList[i].updateItem();
     }
     notifyListeners();

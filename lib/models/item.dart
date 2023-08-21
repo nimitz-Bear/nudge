@@ -82,7 +82,8 @@ class TodoItem {
           .update(toMap());
 
       //update the provider
-      ItemsProvider().getItemsForDay(time ?? DateTime.now());
+      // ItemsProvider().getItemsForDay(time ?? DateTime.now());
+      // ItemsProvider().getList(time ?? DateTime.now());
       return true;
     } catch (e) {
       print(e.toString());
@@ -104,7 +105,7 @@ class TodoItem {
         .set(toMap())
         .onError((e, _) => print("Error writing document: $e"));
 
-    ItemsProvider().getItemsForDay(time ?? DateTime.now());
+    ItemsProvider().getList(DateTime.now());
   }
 
   void deleteItem() async {
@@ -112,6 +113,6 @@ class TodoItem {
     await collection.doc(itemID).delete();
 
     // update the provider to show the item as deleted
-    ItemsProvider().getItemsForDay(time ?? DateTime.now());
+    ItemsProvider().getList(DateTime.now());
   }
 }

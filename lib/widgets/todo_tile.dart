@@ -47,6 +47,9 @@ class _ToDoTileState extends State<ToDoTile> {
                   widget.item.deleteItem();
 
                   // update the provider to show the item as deleted
+                  ItemsProvider()
+                      .getItemsForDay(widget.item.time ?? DateTime.now());
+                  setState(() {});
                 },
                 icon: Icons.delete,
                 backgroundColor: Colors.red,
