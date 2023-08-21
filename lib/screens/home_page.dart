@@ -6,7 +6,6 @@ import 'package:nudge/providers/items_provider.dart';
 import 'package:nudge/screens/individual_page.dart';
 import 'package:nudge/widgets/banner.dart';
 import 'package:nudge/widgets/day_of_the_week.dart';
-import 'package:nudge/widgets/todo_tile.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/todo_list.dart';

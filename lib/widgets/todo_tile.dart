@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
+import 'package:nudge/providers/items_provider.dart';
 
 import '../models/item.dart';
 import '../screens/individual_page.dart';
@@ -10,7 +11,7 @@ class ToDoTile extends StatefulWidget {
   final Function(bool?)? onChanged;
   final Function(BuildContext)? deleteFunction;
 
-  ToDoTile(
+  const ToDoTile(
       {super.key,
       required this.item,
       required this.onChanged,
@@ -44,6 +45,9 @@ class _ToDoTileState extends State<ToDoTile> {
               SlidableAction(
                 onPressed: (context) {
                   widget.item.deleteItem();
+
+                  // update the provider to show the item as deleted
+                  ItemsProvider().getList(widget.item.time ?? DateTime.now());
                 },
                 icon: Icons.delete,
                 backgroundColor: Colors.red,
