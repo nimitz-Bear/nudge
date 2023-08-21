@@ -20,8 +20,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<bool> selectedDay = [false, false, false, false, false, false, false];
-  // List<TodoItem> todayToDoList = [];
-  // List<TodoItem> tommorowToDoList = [];
 
   final user = FirebaseAuth.instance.currentUser!;
 
@@ -49,37 +47,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  // List<TodoItem> todoItems = [];
-  // // get all the items from firebase, corresponding to the input date
-  // Future<List<TodoItem>> getItemsForDay(DateTime date) async {
-  //   DateTime startOfDay =
-  //       DateTime(date.year, date.month, date.day); // Set time to midnight
-  //   DateTime endOfDay = DateTime(date.year, date.month, date.day, 23, 59,
-  //       59); // Set time to just before midnight
-  //   todoItems.clear();
-  //   // List<TodoItem> items = [];
-
-  //   await FirebaseFirestore.instance
-  //       .collection("items")
-  //       .where('time',
-  //           isGreaterThanOrEqualTo: startOfDay.millisecondsSinceEpoch)
-  //       .where('time', isLessThanOrEqualTo: endOfDay.millisecondsSinceEpoch)
-  //       .get()
-  //       .then((value) {
-  //     List<Map<String, dynamic>> data = [];
-
-  //     for (var i in value.docs) {
-  //       data.add(i.data());
-  //     }
-
-  //     for (var element in data) {
-  //       todoItems.add(TodoItem.fromMap(element));
-  //     }
-  //   });
-
-  //   return todoItems;
-  // }
-
   // checkbox was tapped
   void checkBoxChanged(bool? newValue, TodoItem item) {
     setState(() {
@@ -96,17 +63,6 @@ class _HomePageState extends State<HomePage> {
     return formattedDate;
   }
 
-  //TODO: change this to a StreamBuilder?
-  // Future<List<TodoItem>> refreshItems() async {
-  //     ItemsProvider().getList(DateTime.now());
-  //   tommorowToDoList =
-  //       await getItemsForDay(DateTime.now().add(const Duration(days: 1)));
-
-  //   if (mounted) setState(() {});
-  //   return tommorowToDoList;
-  //   // print(tommorowToDoList);
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -119,8 +75,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // refreshItems();
-
     return Scaffold(
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
@@ -206,31 +160,17 @@ class _HomePageState extends State<HomePage> {
                 child: Divider(color: Theme.of(context).colorScheme.tertiary),
               ),
 
-              Expanded(
-                child: SizedBox(
-                  height: 200.0,
-                  child: Consumer<ItemsProvider>(
-                    builder: (context, provider, _) {
-                      return ListView.builder(
-                        itemCount: provider.todayToDoList.length,
-                        itemBuilder: (context, index) {
-                          return ToDoTile(
-                            item: provider.todayToDoList[index],
-                            onChanged: (value) => checkBoxChanged(
-                                value, provider.todayToDoList[index]),
-                            deleteFunction: (context) =>
-                                deleteTask(provider.todayToDoList, index),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
+              Consumer<ItemsProvider>(
+                builder: (context, provider, _) {
+                  return TodoList(
+                      items: provider.todayToDoList,
+                      checkBoxChanged: checkBoxChanged,
+                      deleteTask: deleteTask,
+                      whichday: WHICHDAY.TODAY);
+                },
               ),
 
               const Text("Tommorow"),
-              // TODO: because it's in the build function, refreshing the tommorow's item list
-              // causes the drag reordering to be undone
 
               Consumer<ItemsProvider>(
                 builder: (context, provider, _) {
@@ -242,8 +182,6 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
-
-              // TODO: list view for the week?
             ],
           ),
         ),

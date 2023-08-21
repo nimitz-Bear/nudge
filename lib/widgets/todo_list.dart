@@ -29,7 +29,7 @@ class _TodoListState extends State<TodoList> {
   List<TodoItem> positionlessItems = [];
 
   void positionItems() {
-    // print("test ${widget.items.length}");
+    print("test ${widget.items.length}");
 
     // look for the posistionless items
     widget.items.forEach((element) {
@@ -44,7 +44,7 @@ class _TodoListState extends State<TodoList> {
       widget.items.remove(element);
     }
 
-    // give each positionless item a position, and add it to the list
+    // give each positionless item a position, at the end and add it to the list
     positionlessItems.forEach((element) {
       element.position = widget.items.length;
       widget.items.add(element);
@@ -52,7 +52,7 @@ class _TodoListState extends State<TodoList> {
       print(element.toMap());
     });
 
-    // sort the list by posistion
+    // finally, sort the list by posistion
     widget.items.sort((a, b) => a.position.compareTo(b.position));
   }
 
@@ -68,7 +68,8 @@ class _TodoListState extends State<TodoList> {
 
   @override
   Widget build(BuildContext context) {
-    if (a == false && widget.items != []) {
+    if (a == false && widget.items.isNotEmpty) {
+      print(widget.items.length);
       a = true;
       positionItems();
     }

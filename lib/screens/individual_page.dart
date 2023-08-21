@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
+import 'package:nudge/providers/items_provider.dart';
 
 class IndividualPage extends StatefulWidget {
   final TodoItem? item;
@@ -263,12 +264,13 @@ class _IndividualPageState extends State<IndividualPage> {
                       saveFields(item);
 
                       item.insertItem();
-                      //TODO call get list to update it
+                      ItemsProvider().getList(item.time ?? DateTime.now());
                     } else {
                       saveFields(widget.item!);
 
                       widget.item!.updateItem();
-                      //TODO call get list to update it
+                      ItemsProvider()
+                          .getList(widget.item?.time ?? DateTime.now());
                     }
 
                     const AlertDialog(title: Text("Saved reminder"));
