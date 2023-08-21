@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:nudge/providers/items_provider.dart';
 
 class TodoItem {
   String itemID = "";
@@ -79,50 +80,38 @@ class TodoItem {
       collection
           .doc(itemID) // <-- Doc ID where data should be updated.
           .update(toMap());
+
+      //update the provider
+      ItemsProvider().getItemsForDay(time ?? DateTime.now());
       return true;
     } catch (e) {
       print(e.toString());
       return false;
     }
-
-    // var collection = FirebaseFirestore.instance.collection('items');
-    // collection
-    //     .doc(itemID) // <-- Doc ID where data should be updated.
-    //     .update(toMap());
   }
 
   // create a new document in the firebase collection
-  void insertItem() async {
+  void insertNewItem() async {
     var db = FirebaseFirestore.instance;
+
+    // let firebase generate a unique key for the document
+    var id = FirebaseFirestore.instance.collection("items").doc().id;
+    itemID = id;
 
     db
         .collection("items")
-        .doc(itemID)
+        .doc(id)
         .set(toMap())
         .onError((e, _) => print("Error writing document: $e"));
+
+    ItemsProvider().getItemsForDay(time ?? DateTime.now());
   }
 
   void deleteItem() async {
     var collection = FirebaseFirestore.instance.collection('items');
     await collection.doc(itemID).delete();
+
+    // update the provider to show the item as deleted
+    ItemsProvider().getItemsForDay(time ?? DateTime.now());
   }
-
-  // // overwrite this item with the `toMap()` of another TodoItem
-  // void _overwriteItem(Map<String, dynamic> map) {
-  //   fromMap(map); //FIXME: this probably wont work
-  // }
-
-  // // switch this todo item and another todo item
-  // TodoItem switchItem(TodoItem other) {
-  //   Map<String, dynamic> temp = other.toMap();
-
-  //   //overwrite the other TodoItem with this item's info
-  //   // other.fromMap(toMap());
-  //   other._overwriteItem(toMap());
-
-  //   // overwrite this item with Other's info
-  //   _overwriteItem(temp);
-
-  //   return other;
-  // }
 }

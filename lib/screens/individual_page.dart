@@ -49,8 +49,7 @@ class _IndividualPageState extends State<IndividualPage> {
     linkController?.text = item.link ?? "";
 
     // time
-    selectedDate =
-        item.time ?? DateTime.now(); //TODO: figure out how to read in the time
+    selectedDate = item.time ?? DateTime.now();
 
     // bool
     done = item.done;
@@ -256,16 +255,12 @@ class _IndividualPageState extends State<IndividualPage> {
                     // if the widget item doesnt exist, make a new one, else update
                     if (widget.item == null) {
                       TodoItem item = TodoItem(
-                          itemID: FirebaseFirestore.instance
-                              .collection("items")
-                              .doc()
-                              .id,
-                          itemName: titleController?.text ?? "");
+                          itemID: "", itemName: titleController?.text ?? "");
 
                       saveFields(item);
 
-                      item.insertItem();
-                      ItemsProvider().getList(item.time ?? DateTime.now());
+                      item.insertNewItem();
+                      // ItemsProvider().getList(item.time ?? DateTime.now());
                     } else {
                       saveFields(widget.item!);
 

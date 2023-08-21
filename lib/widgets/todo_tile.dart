@@ -36,9 +36,8 @@ class _ToDoTileState extends State<ToDoTile> {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: GestureDetector(
-        onTap: () => Navigator.of(context).push(MaterialPageRoute(
+        onDoubleTap: () => Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => IndividualPage(item: widget.item))),
-        onDoubleTap: () => print("test"),
         child: Slidable(
           endActionPane: ActionPane(
             motion: const StretchMotion(),
@@ -48,7 +47,6 @@ class _ToDoTileState extends State<ToDoTile> {
                   widget.item.deleteItem();
 
                   // update the provider to show the item as deleted
-                  ItemsProvider().getList(widget.item.time ?? DateTime.now());
                 },
                 icon: Icons.delete,
                 backgroundColor: Colors.red,
@@ -75,15 +73,6 @@ class _ToDoTileState extends State<ToDoTile> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Expanded( // FIXME: adding Expanded this causes an error
-                    //   child: Text(widget.item.itemName,
-                    //       overflow: TextOverflow.ellipsis,
-                    //       // TODO: change this to a textfield
-                    //       style: TextStyle(
-                    //           decoration: widget.item.done
-                    //               ? TextDecoration.lineThrough
-                    //               : TextDecoration.none)),
-                    // ),
                     SizedBox(
                       width: 250,
                       height: 30,

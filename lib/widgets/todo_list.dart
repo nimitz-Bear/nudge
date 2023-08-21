@@ -25,7 +25,7 @@ class TodoList extends StatefulWidget {
 }
 
 class _TodoListState extends State<TodoList> {
-  bool a = false;
+  bool itemsSorted = false;
   List<TodoItem> positionlessItems = [];
 
   void positionItems() {
@@ -59,18 +59,16 @@ class _TodoListState extends State<TodoList> {
   @override
   void initState() {
     super.initState();
-    print(widget.items);
 
-    // // TODO: implement initState
-
-    print(widget.items);
+    itemsSorted = false;
+    print("inital ${widget.items.length}");
   }
 
   @override
   Widget build(BuildContext context) {
-    if (a == false && widget.items.isNotEmpty) {
-      print(widget.items.length);
-      a = true;
+    if (itemsSorted == false && widget.items.isNotEmpty) {
+      print("sorted items");
+      itemsSorted = true;
       positionItems();
     }
 
@@ -79,30 +77,17 @@ class _TodoListState extends State<TodoList> {
         height: 200.0,
         child: ReorderableListView.builder(
           onReorder: (oldIndex, newIndex) {
+            // print("test");
             if (widget.whichday == WHICHDAY.TODAY) {
               ItemsProvider().changeOrderToday(oldIndex, newIndex);
             } else {
               ItemsProvider().changeOrderTomorrow(oldIndex, newIndex);
             }
-            // widget.items[oldIndex].switchItem(widget.items[newIndex]);
 
-            // setState(() {
-            //   if (newIndex > oldIndex) newIndex--;
-
-            //   // // store old Index Position
-            //   // int tempPosition = widget.items[oldIndex].position;
-
-            //   // // swap position of new and old index
-            //   // widget.items[oldIndex].position = widget.items[newIndex].position;
-
-            //   final item = widget.items.removeAt(oldIndex);
-            //   widget.items.insert(newIndex, item);
+            // widget.items.forEach((element) {
+            //   print(element.toMap());
             // });
-
-            // for (int i = 0; i < widget.items.length; i++) {
-            //   widget.items[i].position = i;
-            //   widget.items[i].updateItem();
-            // }
+            // positionItems();
           },
           itemCount: widget.items.length,
           itemBuilder: (context, index) {

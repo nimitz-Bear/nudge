@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
 
             colorScheme: const ColorScheme(
                 brightness: Brightness.light,
-                primary: Colors.black, //TODO change this back to white
+                primary: Colors.black,
                 // secondaryContainer: Colors.white,
                 onPrimary: Color(0xFFfdb400),
                 secondary: Color(0xFFfdb400),

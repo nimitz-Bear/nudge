@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       item.done = !item.done;
     });
-    item.insertItem();
+    item.updateItem();
   }
 
   /// method to get the current name of the month and day
