@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:nudge/widgets/my_button.dart';
 import 'package:nudge/widgets/my_textfield.dart';

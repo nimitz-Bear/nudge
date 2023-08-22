@@ -21,7 +21,7 @@ class ItemsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // get all the items from firebase, corresponding to the input date
+  // get all the items from firebase, from 00:00 till 23:59:59 on the input date
   Future<List<TodoItem>> getItemsForDay(DateTime date) async {
     DateTime startOfDay =
         DateTime(date.year, date.month, date.day); // Set time to midnight

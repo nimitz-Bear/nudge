@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
@@ -20,6 +19,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<bool> selectedDay = [false, false, false, false, false, false, false];
+  int selectedIndex = 3;
+  DateTime now = DateTime.now();
 
   void deleteTask(List<TodoItem> items, int index) {
     setState(() {
@@ -41,6 +42,7 @@ class _HomePageState extends State<HomePage> {
         selectedDay[index] = !selectedDay[index];
       }
     });
+    selectedIndex = index;
   }
 
   // checkbox was tapped
@@ -150,36 +152,71 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ])),
-              const SizedBox(height: 20),
-              // text saying today and current date
-              const Text("Today"),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Divider(color: Theme.of(context).colorScheme.tertiary),
-              ),
+              selectedDay[3]
+                  ? Expanded(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 20),
 
-              Consumer<ItemsProvider>(
-                builder: (context, provider, _) {
-                  return TodoList(
-                      items: provider.todayToDoList,
-                      checkBoxChanged: checkBoxChanged,
-                      deleteTask: deleteTask,
-                      whichday: WHICHDAY.TODAY);
-                },
-              ),
+                          // selectedDay[3] ?
 
-              const Text("Tommorow"),
+                          // text saying today and current date
+                          const Text("Today"),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Divider(
+                                color: Theme.of(context).colorScheme.tertiary),
+                          ),
 
-              Consumer<ItemsProvider>(
-                builder: (context, provider, _) {
-                  return TodoList(
-                    items: provider.tommorowToDoList,
-                    checkBoxChanged: checkBoxChanged,
-                    deleteTask: deleteTask,
-                    whichday: WHICHDAY.TOMORROW,
-                  );
-                },
-              ),
+                          Consumer<ItemsProvider>(
+                            builder: (context, provider, _) {
+                              return TodoList(
+                                  items: provider.todayToDoList,
+                                  checkBoxChanged: checkBoxChanged,
+                                  deleteTask: deleteTask,
+                                  whichday: WHICHDAY.TODAY);
+                            },
+                          ),
+
+                          const Text("Tommorow"),
+
+                          Consumer<ItemsProvider>(
+                            builder: (context, provider, _) {
+                              return TodoList(
+                                items: provider.tommorowToDoList,
+                                checkBoxChanged: checkBoxChanged,
+                                deleteTask: deleteTask,
+                                whichday: WHICHDAY.TOMORROW,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                  : Consumer<ItemsProvider>(
+                      builder: (context, provider, _) {
+                        // the current selected index, plus the current date - 3 days.
+                        DateTime selectedDate = DateTime(
+                            now.year, now.month, now.day + selectedIndex - 3);
+                        return FutureBuilder(
+                            future: provider.getItemsForDay(selectedDate),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                return TodoList(
+                                  items: snapshot.data ?? [],
+                                  checkBoxChanged: checkBoxChanged,
+                                  deleteTask: deleteTask,
+                                  whichday: WHICHDAY.TOMORROW,
+                                );
+                              } else {
+                                return const CircularProgressIndicator
+                                    .adaptive();
+                              }
+                            });
+                      },
+                    )
             ],
           ),
         ),
