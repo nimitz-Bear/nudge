@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 void showErrorDialog(BuildContext context, String content) {
+  if (!context.mounted) {
+    return;
+  }
+
   showDialog(
     context: context,
     builder: (context) {

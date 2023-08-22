@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
 import 'package:nudge/providers/items_provider.dart';
+import 'package:nudge/providers/user_provider.dart';
 import 'package:nudge/screens/individual_page.dart';
 import 'package:nudge/widgets/banner.dart';
 import 'package:nudge/widgets/day_of_the_week.dart';
@@ -20,12 +21,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<bool> selectedDay = [false, false, false, false, false, false, false];
 
-  final user = FirebaseAuth.instance.currentUser!;
-
-  void signUserOut() {
-    FirebaseAuth.instance.signOut();
-  }
-
   void deleteTask(List<TodoItem> items, int index) {
     setState(() {
       items.removeAt(index);
@@ -40,10 +35,12 @@ class _HomePageState extends State<HomePage> {
       }
     }
 
-    if (selectedDay[index] != true) {
-      // switch the bool values
-      selectedDay[index] = !selectedDay[index];
-    }
+    setState(() {
+      if (selectedDay[index] != true) {
+        // switch the bool values
+        selectedDay[index] = !selectedDay[index];
+      }
+    });
   }
 
   // checkbox was tapped
@@ -65,6 +62,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    selectedDay[3] = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ItemsProvider().getList(DateTime.now());
     });
@@ -103,7 +101,8 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             IconButton(
-                onPressed: () => signUserOut(), icon: const Icon(Icons.logout)),
+                onPressed: () => UserProvider().signUserOut(),
+                icon: const Icon(Icons.logout)),
           ],
         ),
       ),
@@ -135,6 +134,8 @@ class _HomePageState extends State<HomePage> {
                               scrollDirection: Axis.horizontal,
                               itemCount: 7,
                               itemBuilder: (context, index) {
+                                // create a list of 7 DayOfTheWeekWidgets
+                                // starting with 3 days before today, and 3 days after
                                 int inital = -3;
                                 return DayOfTheWeekWidget(
                                     date: DateTime.now()

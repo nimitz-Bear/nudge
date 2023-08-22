@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:nudge/providers/items_provider.dart';
+import 'package:nudge/providers/user_provider.dart';
 import 'package:nudge/screens/auth_page.dart';
 import 'package:nudge/themes/default_theme.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +19,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(create: ((context) => ItemsProvider()))
+          ChangeNotifierProvider(create: ((context) => ItemsProvider())),
+          ChangeNotifierProvider(create: ((context) => UserProvider()))
         ],
         child: MaterialApp(
           theme: defaultTheme,

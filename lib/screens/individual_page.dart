@@ -214,7 +214,7 @@ class _IndividualPageState extends State<IndividualPage> {
                     value: doNotification,
                     activeColor: Theme.of(context).colorScheme.secondary,
                     onChanged: (bool value) {
-                      // This is called when the user toggles the switch.
+                      // called when switch si toggled
                       setState(() {
                         doNotification = !doNotification;
                         // widget.onValueChanged(value);

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nudge/widgets/my_button.dart';
 import 'package:nudge/widgets/my_textfield.dart';
 
-import '../services/auth_service.dart';
+import '../providers/user_provider.dart';
 import '../widgets/img_and_text_button.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -20,29 +20,29 @@ class _RegisterPageState extends State<RegisterPage> {
   final passwordController = TextEditingController();
   final passwordConfirmController = TextEditingController();
 
-  void showErrorMessage(String message) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(title: Text(message));
-        });
-  }
+  // void showErrorMessage(String message) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(title: Text(message));
+  //       });
+  // }
 
-  void signUserUp() async {
-    // check fi confirmed password is right
-    if (passwordController.text != passwordConfirmController.text) {
-      showErrorMessage("passowrds don't match");
-      return;
-    }
+  // void signUserUp() async {
+  //   // check fi confirmed password is right
+  //   if (passwordController.text != passwordConfirmController.text) {
+  //     showErrorMessage("passowrds don't match");
+  //     return;
+  //   }
 
-    try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text);
-    } on FirebaseAuthException catch (e) {
-      showErrorMessage(e.code);
-      return;
-    }
-  }
+  //   try {
+  //     await FirebaseAuth.instance.createUserWithEmailAndPassword(
+  //         email: emailController.text, password: passwordController.text);
+  //   } on FirebaseAuthException catch (e) {
+  //     showErrorMessage(e.code);
+  //     return;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +84,13 @@ class _RegisterPageState extends State<RegisterPage> {
                     obscureText: true),
                 //Continue with email button
                 const SizedBox(height: 25),
-                MyButton(onTap: signUserUp, text: "Sign up"),
+                MyButton(
+                    onTap: () => UserProvider().signUserUp(
+                        context,
+                        passwordController.text,
+                        passwordConfirmController.text,
+                        emailController.text),
+                    text: "Sign up"),
 
                 const SizedBox(height: 25),
 
@@ -112,7 +118,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   children: [
                     // Image.asset('lib/images/google.png', height: 40),
                     ImageAndTextButton(
-                      onTap: () => AuthService().siginInWithGoogle(),
+                      onTap: () => UserProvider().siginInWithGoogle(),
                       buttonText: "Continue with Google",
                       imageFilePath: 'lib/images/google.png',
                     ),
