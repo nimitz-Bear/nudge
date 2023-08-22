@@ -74,8 +74,9 @@ class _IndividualPageState extends State<IndividualPage> {
 
   @override
   void initState() {
-    setupExistingItem();
+    // set selectedDate to start of the day
     selectedDate = DateTime(now.year, now.month, now.day);
+    setupExistingItem();
     super.initState();
   }
   // TODO: refactor so that only the date/time picker is Stateful

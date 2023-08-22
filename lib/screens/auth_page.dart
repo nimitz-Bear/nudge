@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:nudge/screens/login_or_register.dart';
 
 import 'home_page.dart';
-import 'login_page.dart';
 
+/// this page checks if the user is logged in, and decides wether to open the login/register page or the HomePage
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
 
@@ -16,12 +16,12 @@ class AuthPage extends StatelessWidget {
         builder: (context, snapshot) {
           //user is logged in
           if (snapshot.hasData) {
-            return HomePage();
+            return const HomePage();
           }
 
           // user is not logged in
           else {
-            return LoginOrRegisterPage();
+            return const LoginOrRegisterPage();
           }
         },
       ),

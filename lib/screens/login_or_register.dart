@@ -3,6 +3,7 @@ import 'package:nudge/screens/register_page.dart';
 
 import 'login_page.dart';
 
+/// this page decides if the user is on the login or register page
 class LoginOrRegisterPage extends StatefulWidget {
   const LoginOrRegisterPage({super.key});
 
