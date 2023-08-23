@@ -8,7 +8,9 @@ import 'package:nudge/widgets/banner.dart';
 import 'package:nudge/widgets/day_of_the_week.dart';
 import 'package:provider/provider.dart';
 
+import '../models/label.dart';
 import '../widgets/todo_list.dart';
+import 'label_picker.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -86,8 +88,16 @@ class _HomePageState extends State<HomePage> {
             ),
             IconButton(
               icon: const Icon(Icons.calendar_month),
-              onPressed: () {
+              onPressed: () async {
                 // Handle search button press
+                // OptionDialog dialog = OptionDialog(options: ["a", "b", "c"]);
+                // print(await dialog.showOptionDialog(context));
+                LabelPicker picker = LabelPicker();
+                Label? chosenLabel = await picker.showLabelPicker(context);
+
+                if (chosenLabel != null) {
+                  print(chosenLabel.name);
+                }
               },
             ),
             FloatingActionButton(
