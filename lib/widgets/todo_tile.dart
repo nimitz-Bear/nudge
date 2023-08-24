@@ -84,6 +84,10 @@ class _ToDoTileState extends State<ToDoTile> {
                           widget.item.itemName = titleController.text;
                           widget.item.updateItem();
                         },
+                        style: TextStyle(
+                            decoration: widget.item.done
+                                ? TextDecoration.lineThrough
+                                : TextDecoration.none),
                         controller: titleController,
                         maxLength: 30,
                         decoration: const InputDecoration(

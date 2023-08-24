@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
 import 'package:nudge/providers/items_provider.dart';
 
+import '../models/label.dart';
 import '../widgets/dialog_utils.dart';
 
 class IndividualPage extends StatefulWidget {
@@ -27,6 +28,12 @@ class _IndividualPageState extends State<IndividualPage> {
   var outputFormat = DateFormat('MMMM dd');
   var timeFormat = DateFormat.Hm();
   bool showTime = false;
+  List<Label> labels = [
+    Label("Work", Colors.blue),
+    Label("Meeting", Colors.green),
+    Label("Project A", Colors.pink),
+    Label("Important", Colors.redAccent),
+  ];
 
   void onCheckboxChanged(bool? value) {
     setState(() {
@@ -96,6 +103,7 @@ class _IndividualPageState extends State<IndividualPage> {
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Row with:
@@ -243,14 +251,41 @@ class _IndividualPageState extends State<IndividualPage> {
                   decoration: const InputDecoration(
                       hintText: "Link ...", border: InputBorder.none)),
               Divider(color: Theme.of(context).colorScheme.tertiary),
-              const SizedBox(
-                  height: 50, child: Center(child: Text("Do Labels here"))),
-              // TODO: a list of labels and a + button
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Icon(Icons.label),
+                  SizedBox(
+                    height: 40,
+                    width: MediaQuery.of(context).size.width - 80,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: labels.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: labels[index].color,
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(5.0))),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(labels[index].name,
+                                  style: const TextStyle(height: 1.1)),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                ],
+              ),
+
               // TODO: Checklist
 
-              const Expanded(
-                child: SizedBox(),
-              ),
+              const Expanded(child: SizedBox()),
               Align(
                 alignment: Alignment.bottomRight,
                 child: TextButton(
