@@ -1,44 +1,84 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:nudge/providers/labels_provider.dart';
 
 import '../models/label.dart';
+import 'label_maker.dart';
 
 class LabelPicker {
-  List<Label> labels = [
-    Label("Work", Colors.blue),
-    Label("Fun", Colors.greenAccent),
-    Label("School", Colors.redAccent),
-    Label("Errand", Colors.purple),
-    // Label("Fun", Colors.greenAccent),
-  ];
-
   Future<Label?> showLabelPicker(BuildContext context) {
     return showDialog<Label?>(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          content: SizedBox(
-            width: 200,
-            height: 200,
+        return StatefulBuilder(builder: (context, setState) {
+          return AlertDialog(
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: 200,
+                  height: 200,
 
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: labels.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Row(
-                    children: [
-                      const Icon(Icons.label_important),
-                      const SizedBox(width: 10),
-                      Text(labels[index].name),
-                    ],
+                  // get all the lsit of labels into a ListView using FutureBuilder
+                  child: FutureBuilder(
+                    future: LabelsProvider().getLabels(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        List<Label> labels = snapshot.data ?? [];
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: labels.length,
+                          itemBuilder: (context, index) {
+                            return Slidable(
+                              endActionPane: ActionPane(
+                                motion: const ScrollMotion(),
+                                children: [
+                                  SlidableAction(
+                                    onPressed: (context) {
+                                      setState(() {
+                                        LabelsProvider()
+                                            .deleteLabel(labels[index]);
+                                      });
+                                    },
+                                    icon: Icons.delete,
+                                    backgroundColor: Colors.red,
+                                  )
+                                ],
+                              ),
+                              child: ListTile(
+                                title: Row(
+                                  children: [
+                                    Icon(Icons.label_important,
+                                        color: labels[index].color),
+                                    const SizedBox(width: 10),
+                                    Text(labels[index].name),
+                                  ],
+                                ),
+                                onTap: () =>
+                                    Navigator.of(context).pop(labels[index]),
+                              ),
+                            );
+                          },
+                        );
+                      } else {
+                        return const CircularProgressIndicator.adaptive();
+                      }
+                    },
                   ),
-                  onTap: () => Navigator.of(context).pop(labels[index]),
-                );
-              },
+                  // ),
+                ),
+                TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      LabelMaker().showLabelMaker(context);
+                    },
+                    child: const Row(
+                      children: [Icon(Icons.add), Text("Add a label")],
+                    ))
+              ],
             ),
-            // ),
-          ),
-        );
+          );
+        });
       },
     ).then((value) {
       return value;
@@ -47,64 +87,3 @@ class LabelPicker {
     });
   }
 }
-
-// import 'package:flutter/material.dart';
-
-// class OptionDialog extends StatelessWidget {
-//   final List<String> options;
-
-//   OptionDialog({required this.options});
-
-//   Future<String?> showOptionDialog(BuildContext context) async {
-//     String? selectedOption;
-
-//     await showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: Text('Select an Option'),
-//           content: Column(
-//             mainAxisSize: MainAxisSize.min,
-//             children: options.map((option) {
-//               return ListTile(
-//                 title: Text(option),
-//                 onTap: () {
-//                   selectedOption = option;
-//                   Navigator.pop(context);
-//                 },
-//               );
-//             }).toList(),
-//           ),
-//         );
-//       },
-//     );
-
-//     return selectedOption;
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ElevatedButton(
-//       onPressed: () async {
-//         String? selected = await showOptionDialog(context);
-//         if (selected != null) {
-//           print('User selected: $selected');
-//         }
-//       },
-//       child: Text('Show Option Dialog'),
-//     );
-//   }
-// }
-
-// // void main() {
-// //   runApp(MaterialApp(
-// //     home: Scaffold(
-// //       appBar: AppBar(
-// //         title: Text('Option Dialog Example'),
-// //       ),
-// //       body: Center(
-// //         child: OptionDialog(options: ['Option 1', 'Option 2', 'Option 3']),
-// //       ),
-// //     ),
-// //   ));
-// // }

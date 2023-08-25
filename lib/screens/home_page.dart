@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
 import 'package:nudge/providers/items_provider.dart';
+import 'package:nudge/providers/labels_provider.dart';
 import 'package:nudge/providers/user_provider.dart';
 import 'package:nudge/screens/individual_page.dart';
 import 'package:nudge/widgets/banner.dart';
@@ -89,9 +90,6 @@ class _HomePageState extends State<HomePage> {
             IconButton(
               icon: const Icon(Icons.calendar_month),
               onPressed: () async {
-                // Handle search button press
-                // OptionDialog dialog = OptionDialog(options: ["a", "b", "c"]);
-                // print(await dialog.showOptionDialog(context));
                 LabelPicker picker = LabelPicker();
                 Label? chosenLabel = await picker.showLabelPicker(context);
 

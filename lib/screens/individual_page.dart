@@ -29,10 +29,10 @@ class _IndividualPageState extends State<IndividualPage> {
   var timeFormat = DateFormat.Hm();
   bool showTime = false;
   List<Label> labels = [
-    Label("Work", Colors.blue),
-    Label("Meeting", Colors.green),
-    Label("Project A", Colors.pink),
-    Label("Important", Colors.redAccent),
+    Label("", "Work", Colors.blue),
+    Label("", "Meeting", Colors.green),
+    Label("", "Project A", Colors.pink),
+    Label("", "Important", Colors.redAccent),
   ];
 
   void onCheckboxChanged(bool? value) {
@@ -65,12 +65,12 @@ class _IndividualPageState extends State<IndividualPage> {
     done = item.done;
     doNotification = item.isReminder;
 
-    //TODO: add ui elements for repeating and for labels
+    //TODO: add ui elements for repeating
   }
 
   // save the fields values into an item
   void saveFields(TodoItem item) {
-    item.itemName = titleController.text ?? "";
+    item.itemName = titleController.text;
     item.itemDescription = descriptionController.text;
     item.location = locationController.text;
     item.link = linkController.text;
@@ -299,8 +299,8 @@ class _IndividualPageState extends State<IndividualPage> {
                     // TODO: move this to the ItemsProvider
                     // if the widget item doesnt exist, make a new one, else update
                     if (widget.item == null) {
-                      TodoItem item = TodoItem(
-                          itemID: "", itemName: titleController.text ?? "");
+                      TodoItem item =
+                          TodoItem(itemID: "", itemName: titleController.text);
 
                       saveFields(item);
 

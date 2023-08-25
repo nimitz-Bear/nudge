@@ -105,4 +105,13 @@ class UserProvider extends ChangeNotifier {
         .doc(newUser.uid)
         .set({"email": newUser.email});
   }
+
+  /// returns the current logged-in user id
+  /// returns null if no user is logged in
+  String? getCurrentUserId() {
+    if (FirebaseAuth.instance.currentUser != null) {
+      return FirebaseAuth.instance.currentUser!.uid;
+    }
+    return null;
+  }
 }
