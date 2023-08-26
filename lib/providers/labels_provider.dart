@@ -41,22 +41,22 @@ class LabelsProvider extends ChangeNotifier {
       _labels.add(Label.fromMap(i.data()));
     }
 
-    for (var element in _labels) {
-      print(element.toMap());
-    }
+    // for (var element in _labels) {
+    //   print(element.toMap());
+    // }
 
     notifyListeners();
     return _labels;
   }
 
   Future<bool> upsertLabel(BuildContext context, Label label) async {
-    if (await labelExistsByName(label)) {
-      showErrorDialog(
-          context, "Label with the name ${label.name} already exists.");
-      return false;
-    }
-
     if (label.id.isEmpty) {
+      if (await labelExistsByName(label)) {
+        showErrorDialog(
+            context, "Label with the name ${label.name} already exists.");
+        return false;
+      }
+
       _newLabel(label);
     } else {
       _updateLabel(label);
@@ -94,6 +94,15 @@ class LabelsProvider extends ChangeNotifier {
         .collection('labels')
         .where('labelName', isEqualTo: label.name)
         .get();
+
+    List<Label> labels = [];
+
+    for (var element in query.docs) {
+      labels.add(Label.fromMap(element.data()));
+    }
+
+    // ignore labeles with the same id as input
+    labels.removeWhere((element) => element.id == label.id);
 
     if (query.size > 0) {
       return true;

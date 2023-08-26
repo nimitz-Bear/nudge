@@ -6,16 +6,16 @@ import 'package:nudge/providers/items_provider.dart';
 import '../models/label.dart';
 import '../widgets/dialog_utils.dart';
 
-class IndividualPage extends StatefulWidget {
+class ItemPage extends StatefulWidget {
   final TodoItem? item;
 
-  const IndividualPage({super.key, this.item});
+  const ItemPage({super.key, this.item});
 
   @override
-  State<IndividualPage> createState() => _IndividualPageState();
+  State<ItemPage> createState() => _ItemPageState();
 }
 
-class _IndividualPageState extends State<IndividualPage> {
+class _ItemPageState extends State<ItemPage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController locationController = TextEditingController();

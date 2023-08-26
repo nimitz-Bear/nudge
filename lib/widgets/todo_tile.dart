@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:nudge/providers/items_provider.dart';
 
 import '../models/item.dart';
-import '../screens/individual_page.dart';
+import '../screens/item_page.dart';
 
 class ToDoTile extends StatefulWidget {
   final TodoItem item;
@@ -37,7 +37,7 @@ class _ToDoTileState extends State<ToDoTile> {
       padding: const EdgeInsets.all(8),
       child: GestureDetector(
         onDoubleTap: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => IndividualPage(item: widget.item))),
+            builder: (context) => ItemPage(item: widget.item))),
         child: Slidable(
           endActionPane: ActionPane(
             motion: const StretchMotion(),

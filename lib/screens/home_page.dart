@@ -4,7 +4,7 @@ import 'package:nudge/models/item.dart';
 import 'package:nudge/providers/items_provider.dart';
 import 'package:nudge/providers/labels_provider.dart';
 import 'package:nudge/providers/user_provider.dart';
-import 'package:nudge/screens/individual_page.dart';
+import 'package:nudge/screens/item_page.dart';
 import 'package:nudge/widgets/banner.dart';
 import 'package:nudge/widgets/day_of_the_week.dart';
 import 'package:provider/provider.dart';
@@ -99,8 +99,8 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             FloatingActionButton(
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const IndividualPage())),
+              onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => const ItemPage())),
               child: const Icon(Icons.add),
             ),
             // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

@@ -3,7 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:nudge/providers/labels_provider.dart';
 
 import '../models/label.dart';
-import 'label_maker.dart';
+import 'label_page.dart';
 
 class LabelPicker {
   Future<Label?> showLabelPicker(BuildContext context) {
@@ -46,13 +46,18 @@ class LabelPicker {
                                 ],
                               ),
                               child: ListTile(
-                                title: Row(
-                                  children: [
-                                    Icon(Icons.label_important,
-                                        color: labels[index].color),
-                                    const SizedBox(width: 10),
-                                    Text(labels[index].name),
-                                  ],
+                                title: GestureDetector(
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.label_important,
+                                          color: labels[index].color),
+                                      const SizedBox(width: 10),
+                                      Text(labels[index].name),
+                                    ],
+                                  ),
+                                  onDoubleTap: () => LabelPage().showLabelMaker(
+                                      context,
+                                      label: labels[index]),
                                 ),
                                 onTap: () =>
                                     Navigator.of(context).pop(labels[index]),
@@ -70,7 +75,7 @@ class LabelPicker {
                 TextButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      LabelMaker().showLabelMaker(context);
+                      LabelPage().showLabelMaker(context);
                     },
                     child: const Row(
                       children: [Icon(Icons.add), Text("Add a label")],
