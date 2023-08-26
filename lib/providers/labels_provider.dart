@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:nudge/models/item.dart';
 import 'package:nudge/providers/user_provider.dart';
 import 'package:nudge/widgets/dialog_utils.dart';
 
@@ -66,8 +67,8 @@ class LabelsProvider extends ChangeNotifier {
   }
 
   // returns true if the label exists
-  Future<bool> labelExistsById(Label label) async {
-    if (label.id.isEmpty) {
+  Future<bool> labelExistsById(String id) async {
+    if (id.isEmpty) {
       return false;
     }
 
@@ -75,7 +76,7 @@ class LabelsProvider extends ChangeNotifier {
         .collection('users')
         .doc(UserProvider().getCurrentUserId())
         .collection('labels')
-        .doc(label.id);
+        .doc(id);
 
     final result = await docRef.get();
 
@@ -147,5 +148,46 @@ class LabelsProvider extends ChangeNotifier {
     await ref.delete();
 
     notifyListeners();
+  }
+
+  Future<Label?> getLabelById(String id) async {
+    var ref = FirebaseFirestore.instance
+        .collection('users')
+        .doc(UserProvider().getCurrentUserId())
+        .collection("labels")
+        .doc(id);
+
+    var snapshot = await ref.get();
+
+    if (snapshot.exists) {
+      return Label.fromMap(snapshot.data()!);
+    }
+    return null;
+  }
+
+  Future<List<Label>> getLabelsForItem(TodoItem? item) async {
+    if (item == null) {
+      return [];
+    }
+
+    List<Label> labels = [];
+
+    if (item.labels == [] || item.labels == null) {
+      return [];
+    }
+
+    // if the label id still exists, get it
+
+    for (var element in item.labels ?? []) {
+      if (await LabelsProvider().labelExistsById(element)) {
+        Label? label = await LabelsProvider().getLabelById(element);
+
+        if (label != null) {
+          labels.add(label);
+        }
+      }
+    }
+
+    return labels;
   }
 }

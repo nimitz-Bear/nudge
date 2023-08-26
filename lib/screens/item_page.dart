@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
 import 'package:nudge/providers/items_provider.dart';
+import 'package:nudge/providers/labels_provider.dart';
+import 'package:nudge/screens/label_picker.dart';
 
 import '../models/label.dart';
 import '../widgets/dialog_utils.dart';
@@ -28,12 +30,7 @@ class _ItemPageState extends State<ItemPage> {
   var outputFormat = DateFormat('MMMM dd');
   var timeFormat = DateFormat.Hm();
   bool showTime = false;
-  List<Label> labels = [
-    Label("", "Work", Colors.blue),
-    Label("", "Meeting", Colors.green),
-    Label("", "Project A", Colors.pink),
-    Label("", "Important", Colors.redAccent),
-  ];
+  List<Label> labels = [];
 
   void onCheckboxChanged(bool? value) {
     setState(() {
@@ -65,6 +62,12 @@ class _ItemPageState extends State<ItemPage> {
     done = item.done;
     doNotification = item.isReminder;
 
+    // get the labels
+    Future.delayed(Duration.zero, () async {
+      labels = await LabelsProvider().getLabelsForItem(item);
+      setState(() {});
+    });
+
     //TODO: add ui elements for repeating
   }
 
@@ -77,6 +80,7 @@ class _ItemPageState extends State<ItemPage> {
     item.time = selectedDate;
     item.isReminder = doNotification;
     item.done = done;
+    item.labels = labels.map((e) => e.id).toList();
   }
 
   @override
@@ -252,38 +256,59 @@ class _ItemPageState extends State<ItemPage> {
                       hintText: "Link ...", border: InputBorder.none)),
               Divider(color: Theme.of(context).colorScheme.tertiary),
 
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Icon(Icons.label),
-                  SizedBox(
-                    height: 40,
-                    width: MediaQuery.of(context).size.width - 80,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: labels.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: labels[index].color,
-                                borderRadius: const BorderRadius.all(
-                                    Radius.circular(5.0))),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(labels[index].name,
-                                  style: const TextStyle(height: 1.1)),
+              GestureDetector(
+                onTap: () async {
+                  Label? chosenLabel =
+                      await LabelPicker().showLabelPicker(context);
+
+                  if (chosenLabel != null) {
+                    setState(() {
+                      labels.add(chosenLabel);
+                    });
+                  }
+                },
+                child: FutureBuilder(
+                  future: LabelsProvider().getLabelsForItem(widget.item),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.label),
+                          SizedBox(
+                            height: 40,
+                            width: MediaQuery.of(context).size.width - 80,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: labels.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: labels[index].color,
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(5.0))),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(labels[index].name,
+                                          style: const TextStyle(height: 1.1)),
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                  )
-                ],
+                          )
+                        ],
+                      );
+                    } else {
+                      return const CircularProgressIndicator.adaptive();
+                    }
+                  },
+                ),
               ),
 
-              // TODO: Checklist
+              // TODO: Checklist (like a sub-list of tasks)
 
               const Expanded(child: SizedBox()),
               Align(
