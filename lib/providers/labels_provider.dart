@@ -139,6 +139,8 @@ class LabelsProvider extends ChangeNotifier {
     await docRef.update(label.toMap());
   }
 
+  // delete a Label from the Labels collection
+  // AND delete all references in the items collection to this lable
   void deleteLabel(Label label) async {
     var ref = FirebaseFirestore.instance
         .collection('users')
@@ -146,6 +148,28 @@ class LabelsProvider extends ChangeNotifier {
         .collection("labels")
         .doc(label.id);
     await ref.delete();
+
+    List<TodoItem> referencedItems = [];
+
+    // remove the reference to this label from all the item collections
+    FirebaseFirestore.instance
+        .collection('items')
+        .where('labels', arrayContains: label.id)
+        .get()
+        .then(
+      (value) {
+        for (var i in value.docs) {
+          referencedItems.add(TodoItem.fromMap(i.data()));
+          print(i.data());
+        }
+
+        // from all the refernced items, remove the deleted label id, and update the items.
+        referencedItems.forEach((element) {
+          element.labels?.removeWhere((element) => element == label.id);
+          element.updateItem();
+        });
+      },
+    );
 
     notifyListeners();
   }
