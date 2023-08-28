@@ -110,7 +110,7 @@ class _LabelPageState extends State<LabelPage> {
                     widget.label ??
                         Label("", labelName.text, dialogPickerColor))) {
                   Navigator.pop(context);
-                  LabelPicker().showLabelPicker(context);
+                  showLabelPicker(context);
                 }
               },
             ),

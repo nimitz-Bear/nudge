@@ -90,11 +90,12 @@ class _HomePageState extends State<HomePage> {
             IconButton(
               icon: const Icon(Icons.calendar_month),
               onPressed: () async {
-                LabelPicker picker = LabelPicker();
-                Label? chosenLabel = await picker.showLabelPicker(context);
+                List<Label>? chosenLabels = await showLabelPicker(context);
 
-                if (chosenLabel != null) {
-                  print(chosenLabel.name);
+                print(chosenLabels);
+
+                if (chosenLabels != null) {
+                  chosenLabels.forEach((element) => print(element.name));
                 }
               },
             ),

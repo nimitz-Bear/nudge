@@ -258,12 +258,11 @@ class _ItemPageState extends State<ItemPage> {
 
               GestureDetector(
                 onTap: () async {
-                  Label? chosenLabel =
-                      await LabelPicker().showLabelPicker(context);
+                  List<Label>? chosenLabel = await showLabelPicker(context);
 
                   if (chosenLabel != null) {
                     setState(() {
-                      labels.add(chosenLabel);
+                      labels.addAll(chosenLabel);
                     });
                   }
                 },
