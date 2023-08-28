@@ -19,18 +19,36 @@ class _LabelPickerState extends State<LabelPicker> {
 
   @override
   void initState() {
+    // add the existing labels to the chosenLabels list
+    chosenLabels.addAll(widget.existingLabels);
+
     // set the inital value fo the checkboxes
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      picked = List.filled((await LabelsProvider().getLabels()).length, false);
+      List<Label> labels = await LabelsProvider().getLabels();
+      picked = List.filled(labels.length, false);
+
+      // the labels that are initally true, should be set to true
+      int index = 0;
+
+      // see which of the labels are in the existingID's
+      for (var element in labels) {
+        List<String> existingIDs =
+            widget.existingLabels.map((e) => e.id).toList();
+
+        // if it's in the existingID, set the corresponding bool value to true
+        if (existingIDs.contains(element.id)) {
+          picked[index] = true;
+        }
+        index++;
+      }
     });
     super.initState();
   }
 
   // remove duplicate Labels
   List<Label> fixChosenLabels(List<Label> input) {
-    // add the existing labels to the chosenLabels list
-    chosenLabels.addAll(widget.existingLabels);
-
+    //     // add the existing labels to the chosenLabels list
+    // chosenLabels.addAll(widget.existingLabels);
     // remove all duplicates by converting to set and then back to list
     return input.toSet().toList();
   }
@@ -50,7 +68,8 @@ class _LabelPickerState extends State<LabelPicker> {
               child: FutureBuilder(
                 future: LabelsProvider().getLabels(),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.connectionState == ConnectionState.done &&
+                      picked != []) {
                     List<Label> labels = snapshot.data ?? [];
 
                     return ListView.builder(
@@ -86,19 +105,32 @@ class _LabelPickerState extends State<LabelPicker> {
                                     child: Checkbox.adaptive(
                                         value: picked[index],
                                         onChanged: (value) {
+                                          print(value);
                                           setState(() {
                                             picked[index] = !picked[index];
                                           });
-                                          chosenLabels.add(labels[index]);
+
+                                          // either add or remove a label, depending on the input
+                                          if (value == true) {
+                                            chosenLabels.add(labels[index]);
+                                          } else {
+                                            // remove wherever the id is the same.
+                                            chosenLabels.removeWhere(
+                                                (element) =>
+                                                    element.id ==
+                                                    labels[index].id);
+                                            // chosenLabels.remove(labels[index]);
+                                          }
                                         }),
                                   )
                                 ],
                               ),
-                              onDoubleTap: () => LabelPage().showLabelMaker(
-                                  context,
-                                  label: labels[index]),
+                              onDoubleTap: () {
+                                Navigator.pop(context);
+                                LabelPage().showLabelMaker(context,
+                                    label: labels[index]);
+                              },
                             ),
-                            // onTap: () => chosenLabels.add(labels[index]),
                           ),
                         );
                       },
@@ -134,11 +166,12 @@ class _LabelPickerState extends State<LabelPicker> {
   }
 }
 
-Future<List<Label>?> showLabelPicker(BuildContext context) {
+Future<List<Label>?> showLabelPicker(BuildContext context,
+    {List<Label>? labels}) {
   return showDialog<List<Label>>(
     context: context,
     builder: (context) {
-      return LabelPicker(existingLabels: []);
+      return LabelPicker(existingLabels: labels ?? []);
     },
   ).then((value) {
     return value;
