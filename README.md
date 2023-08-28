@@ -1,6 +1,6 @@
-# nudge_2
+# Nudge
 
-A new Flutter project.
+A to-do app written in Flutter, who's primary feature is storing to-do items and broadcasting a notification for reminders.
 
 ## Getting Started
 
