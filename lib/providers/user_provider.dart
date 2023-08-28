@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -58,8 +59,15 @@ class UserProvider extends ChangeNotifier {
     final credential = GoogleAuthProvider.credential(
         accessToken: gAuth.accessToken, idToken: gAuth.idToken);
 
-    // use the new credential to sign in
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    final result = await FirebaseAuth.instance.signInWithCredential(credential);
+
+    // if the user is new, check the currently signed in user and add them to firebase
+    if (result.additionalUserInfo!.isNewUser &&
+        FirebaseAuth.instance.currentUser != null) {
+      _createNewUserInFirestore(FirebaseAuth.instance.currentUser!);
+    }
+
+    return result;
   }
 
   // sign a user up using email and password
@@ -73,12 +81,37 @@ class UserProvider extends ChangeNotifier {
       return;
     }
 
+    var auth = FirebaseAuth.instance;
+
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
+
+      // create the user in Firebase
+      if (auth.currentUser != null) {
+        _createNewUserInFirestore(auth.currentUser!);
+      }
     } on FirebaseAuthException catch (e) {
       showErrorDialog(context, e.code);
       return;
     }
+  }
+
+  // when a user is created, this method adds them to firebase
+  // NOTE: only works if user is already logged in
+  void _createNewUserInFirestore(User newUser) {
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(newUser.uid)
+        .set({"email": newUser.email});
+  }
+
+  /// returns the current logged-in user id
+  /// returns null if no user is logged in
+  String? getCurrentUserId() {
+    if (FirebaseAuth.instance.currentUser != null) {
+      return FirebaseAuth.instance.currentUser!.uid;
+    }
+    return null;
   }
 }

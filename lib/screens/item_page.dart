@@ -2,19 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
 import 'package:nudge/providers/items_provider.dart';
+import 'package:nudge/providers/labels_provider.dart';
+import 'package:nudge/screens/label_picker.dart';
 
+import '../models/label.dart';
 import '../widgets/dialog_utils.dart';
 
-class IndividualPage extends StatefulWidget {
+class ItemPage extends StatefulWidget {
   final TodoItem? item;
 
-  const IndividualPage({super.key, this.item});
+  const ItemPage({super.key, this.item});
 
   @override
-  State<IndividualPage> createState() => _IndividualPageState();
+  State<ItemPage> createState() => _ItemPageState();
 }
 
-class _IndividualPageState extends State<IndividualPage> {
+class _ItemPageState extends State<ItemPage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   TextEditingController locationController = TextEditingController();
@@ -27,6 +30,7 @@ class _IndividualPageState extends State<IndividualPage> {
   var outputFormat = DateFormat('MMMM dd');
   var timeFormat = DateFormat.Hm();
   bool showTime = false;
+  List<Label> labels = [];
 
   void onCheckboxChanged(bool? value) {
     setState(() {
@@ -58,18 +62,25 @@ class _IndividualPageState extends State<IndividualPage> {
     done = item.done;
     doNotification = item.isReminder;
 
-    //TODO: add ui elements for repeating and for labels
+    // get the labels
+    Future.delayed(Duration.zero, () async {
+      labels = await LabelsProvider().getLabelsForItem(item);
+      setState(() {});
+    });
+
+    //TODO: add ui elements for repeating
   }
 
   // save the fields values into an item
   void saveFields(TodoItem item) {
-    item.itemName = titleController.text ?? "";
+    item.itemName = titleController.text;
     item.itemDescription = descriptionController.text;
     item.location = locationController.text;
     item.link = linkController.text;
     item.time = selectedDate;
     item.isReminder = doNotification;
     item.done = done;
+    item.labels = labels.map((e) => e.id).toList();
   }
 
   @override
@@ -96,6 +107,7 @@ class _IndividualPageState extends State<IndividualPage> {
         child: Padding(
           padding: const EdgeInsets.all(24.0),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // Row with:
@@ -243,14 +255,64 @@ class _IndividualPageState extends State<IndividualPage> {
                   decoration: const InputDecoration(
                       hintText: "Link ...", border: InputBorder.none)),
               Divider(color: Theme.of(context).colorScheme.tertiary),
-              const SizedBox(
-                  height: 50, child: Center(child: Text("Do Labels here"))),
-              // TODO: a list of labels and a + button
-              // TODO: Checklist
 
-              const Expanded(
-                child: SizedBox(),
+              GestureDetector(
+                onTap: () async {
+                  List<Label>? chosenLabel =
+                      await showLabelPicker(context, labels: labels);
+
+                  if (chosenLabel != null) {
+                    setState(() {
+                      // nuke all the labels and replace it with the new selection
+                      labels.clear();
+                      labels.addAll(chosenLabel);
+                    });
+                  }
+                },
+                child: FutureBuilder(
+                  future: LabelsProvider().getLabelsForItem(widget.item),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.label),
+                          SizedBox(
+                            height: 40,
+                            width: MediaQuery.of(context).size.width - 80,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: labels.length,
+                              itemBuilder: (context, index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: labels[index].color,
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(5.0))),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(labels[index].name,
+                                          style: const TextStyle(height: 1.1)),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          )
+                        ],
+                      );
+                    } else {
+                      return const CircularProgressIndicator.adaptive();
+                    }
+                  },
+                ),
               ),
+
+              // TODO: Checklist (like a sub-list of tasks)
+
+              const Expanded(child: SizedBox()),
               Align(
                 alignment: Alignment.bottomRight,
                 child: TextButton(
@@ -264,8 +326,8 @@ class _IndividualPageState extends State<IndividualPage> {
                     // TODO: move this to the ItemsProvider
                     // if the widget item doesnt exist, make a new one, else update
                     if (widget.item == null) {
-                      TodoItem item = TodoItem(
-                          itemID: "", itemName: titleController.text ?? "");
+                      TodoItem item =
+                          TodoItem(itemID: "", itemName: titleController.text);
 
                       saveFields(item);
 
