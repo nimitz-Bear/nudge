@@ -52,7 +52,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '717527430183',
     projectId: 'nudge-5a8d0',
     authDomain: 'nudge-5a8d0.firebaseapp.com',
-    databaseURL: 'https://nudge-5a8d0-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://nudge-5a8d0-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'nudge-5a8d0.appspot.com',
     measurementId: 'G-T76TBXTD7V',
   );
@@ -62,7 +63,8 @@ class DefaultFirebaseOptions {
     appId: '1:717527430183:android:361cceb30eab578fccca02',
     messagingSenderId: '717527430183',
     projectId: 'nudge-5a8d0',
-    databaseURL: 'https://nudge-5a8d0-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://nudge-5a8d0-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'nudge-5a8d0.appspot.com',
   );
 
@@ -71,10 +73,13 @@ class DefaultFirebaseOptions {
     appId: '1:717527430183:ios:def310821c036f3fccca02',
     messagingSenderId: '717527430183',
     projectId: 'nudge-5a8d0',
-    databaseURL: 'https://nudge-5a8d0-default-rtdb.asia-southeast1.firebasedatabase.app',
+    databaseURL:
+        'https://nudge-5a8d0-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'nudge-5a8d0.appspot.com',
-    androidClientId: '717527430183-bfn0ad50voi0flhv2mdt6hj7s31a252j.apps.googleusercontent.com',
-    iosClientId: '717527430183-dgt907dv0lhenrqb3ovmn0ssq9qu2puq.apps.googleusercontent.com',
+    androidClientId:
+        '717527430183-bfn0ad50voi0flhv2mdt6hj7s31a252j.apps.googleusercontent.com',
+    iosClientId:
+        '717527430183-dgt907dv0lhenrqb3ovmn0ssq9qu2puq.apps.googleusercontent.com',
     iosBundleId: 'com.example.nudge2',
   );
 }
