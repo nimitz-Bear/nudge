@@ -6,9 +6,13 @@ import 'package:nudge/screens/auth_page.dart';
 import 'package:nudge/themes/default_theme.dart';
 import 'package:provider/provider.dart';
 
+import 'firebase_options.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
