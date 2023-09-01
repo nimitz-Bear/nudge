@@ -180,6 +180,8 @@ class _HomePageState extends State<HomePage> {
 
                           Consumer<ItemsProvider>(
                             builder: (context, provider, _) {
+                              provider.todayToDoList
+                                  .forEach((element) => print(element.toMap()));
                               return TodoList(
                                   items: provider.todayToDoList,
                                   checkBoxChanged: checkBoxChanged,

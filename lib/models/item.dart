@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:nudge/providers/items_provider.dart';
+import 'package:nudge/providers/user_provider.dart';
 
 class TodoItem {
   String itemID = "";
@@ -13,6 +14,7 @@ class TodoItem {
   bool isReminder = true;
   List<String>? labels;
   int position = -1;
+  List<String> userIDs = [];
 
   //Labels
   //Group? (i.e. routine)
@@ -20,6 +22,7 @@ class TodoItem {
   TodoItem(
       {required this.itemName,
       required this.itemID,
+      List<String>? userIDs,
       this.done = false,
       this.isRepeating = false,
       this.itemDescription,
@@ -28,7 +31,8 @@ class TodoItem {
       this.link,
       this.isReminder = true,
       this.labels,
-      this.position = -1});
+      this.position = -1})
+      : userIDs = userIDs ?? [];
 
   Map<String, dynamic> toMap() {
     return {
@@ -43,17 +47,11 @@ class TodoItem {
       'location': location ?? "",
       'isReminder': isReminder,
       'labels': labels ?? [],
+      'users': userIDs,
       'position': position
     };
   }
 
-  // static Question fromMap(Map<String, dynamic> map) {
-  //   return Question(
-  //     map['text'],
-  //     map['answer'],
-  //     map['correctAnswer'].ToString() == 'true'
-  //   );
-  // }
   static TodoItem fromMap(Map<String, dynamic> map) {
     // print(map['labels']);
     return TodoItem(
@@ -69,6 +67,7 @@ class TodoItem {
         location: map['location'] ?? "",
         isReminder: map['isReminder'],
         labels: List<String>.from(map['labels'] ?? []),
+        userIDs: List<String>.from(map['users']),
         position: map['position']);
   }
 
@@ -98,6 +97,12 @@ class TodoItem {
     // let firebase generate a unique key for the document
     var id = FirebaseFirestore.instance.collection("items").doc().id;
     itemID = id;
+
+    // supply firebase with the key of the associated user
+    String? userID = UserProvider().getCurrentUserId();
+    if (userID != null) {
+      userIDs.add(userID);
+    }
 
     db
         .collection("items")
