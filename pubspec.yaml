@@ -44,7 +44,6 @@ dependencies:
   google_sign_in: ^6.1.4
   provider: ^6.0.5
   flex_color_picker: ^3.3.0
-  # flutter_colorpicker: ^1.0.3
  
 
 dev_dependencies:
