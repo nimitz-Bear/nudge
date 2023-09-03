@@ -17,10 +17,6 @@ class DayOfTheWeekWidget extends StatefulWidget {
 
   @override
   State<DayOfTheWeekWidget> createState() => _DayOfTheWeekWidgetState();
-
-  // void setIsHighlighted(bool value) {
-  //   isHighlighted = value;
-  // }
 }
 
 class _DayOfTheWeekWidgetState extends State<DayOfTheWeekWidget> {

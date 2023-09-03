@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:nudge/providers/calendar_provider.dart';
 import 'package:nudge/providers/items_provider.dart';
 import 'package:nudge/providers/user_provider.dart';
 import 'package:nudge/screens/auth_page.dart';
@@ -24,7 +25,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: ((context) => ItemsProvider())),
-          ChangeNotifierProvider(create: ((context) => UserProvider()))
+          ChangeNotifierProvider(create: ((context) => UserProvider())),
+          ChangeNotifierProvider(create: ((context) => CalendarProvider()))
         ],
         child: MaterialApp(
           theme: defaultTheme,

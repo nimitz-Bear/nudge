@@ -2,17 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
 import 'package:nudge/providers/items_provider.dart';
-import 'package:nudge/providers/user_provider.dart';
-import 'package:nudge/screens/calendar_page.dart';
-import 'package:nudge/screens/item_page.dart';
+
 import 'package:nudge/widgets/appbar.dart';
 import 'package:nudge/widgets/banner.dart';
 import 'package:nudge/widgets/day_of_the_week.dart';
 import 'package:provider/provider.dart';
 
-import '../models/label.dart';
 import '../widgets/todo_list.dart';
-import 'label_picker.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
