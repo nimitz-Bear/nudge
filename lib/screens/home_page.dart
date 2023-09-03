@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
 import 'package:nudge/providers/items_provider.dart';
-import 'package:nudge/providers/labels_provider.dart';
 import 'package:nudge/providers/user_provider.dart';
+import 'package:nudge/screens/calendar_page.dart';
 import 'package:nudge/screens/item_page.dart';
 import 'package:nudge/widgets/banner.dart';
 import 'package:nudge/widgets/day_of_the_week.dart';
@@ -89,15 +89,8 @@ class _HomePageState extends State<HomePage> {
             ),
             IconButton(
               icon: const Icon(Icons.calendar_month),
-              onPressed: () async {
-                List<Label>? chosenLabels = await showLabelPicker(context);
-
-                print(chosenLabels);
-
-                if (chosenLabels != null) {
-                  chosenLabels.forEach((element) => print(element.name));
-                }
-              },
+              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const CalendarPage())),
             ),
             FloatingActionButton(
               onPressed: () => Navigator.of(context).push(
@@ -180,8 +173,8 @@ class _HomePageState extends State<HomePage> {
 
                           Consumer<ItemsProvider>(
                             builder: (context, provider, _) {
-                              provider.todayToDoList
-                                  .forEach((element) => print(element.toMap()));
+                              // provider.todayToDoList
+                              //     .forEach((element) => print(element.toMap()));
                               return TodoList(
                                   items: provider.todayToDoList,
                                   checkBoxChanged: checkBoxChanged,
