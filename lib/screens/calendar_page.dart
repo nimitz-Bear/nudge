@@ -35,9 +35,12 @@ class _CalendarPageState extends State<CalendarPage> {
       }
     });
 
+    // add an extra day to latest to ensure it includes all events on the last visible day
+    latest.add(const Duration(days: 1));
+
     print(earliest.toIso8601String());
     print(latest.toIso8601String());
-    // WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {}));
+
     CalendarProvider().updateCalendarView(earliest, latest);
   }
 
@@ -57,52 +60,7 @@ class _CalendarPageState extends State<CalendarPage> {
           child: Column(
             children: [
               const SizedBox(height: 20),
-              Expanded(
-                  // child: FutureBuilder(
-                  //   future:
-                  //       ItemsProvider().getItemsForTimeRange(earliest, latest),
-                  //   builder: (context, snapshot) {
-                  //     // check if there is an error gettign the data
-                  //     if (snapshot.hasError) {
-                  //       return const Center(child: Text("Something went wrong!"));
-                  //     }
-
-                  //     if (snapshot.connectionState == ConnectionState.done) {
-                  //       print("connected");
-                  //       return SfCalendar(
-                  //         initialDisplayDate: DateTime.now(),
-                  //         view: CalendarView.month,
-                  //         monthViewSettings:
-                  //             const MonthViewSettings(showAgenda: true),
-                  //         showNavigationArrow: true,
-                  //         dataSource: MeetingDataSource(snapshot.data ?? []),
-                  //         onViewChanged: (viewChangedDetails) {
-                  //           monthSelectionChanged(viewChangedDetails);
-                  //         },
-                  //       );
-                  //     } else {
-                  //       return const Center(
-                  //           child: CircularProgressIndicator.adaptive());
-                  //     }
-                  //   },
-                  // ),
-                  // child: Consumer<ItemsProvider>(
-                  //   builder: (context, provider, child) {
-                  //     provider.getItemsForTimeRange(earliest, latest);
-                  //     return SfCalendar(
-                  //       initialDisplayDate: DateTime.now(),
-                  //       view: CalendarView.month,
-                  //       monthViewSettings:
-                  //           const MonthViewSettings(showAgenda: true),
-                  //       showNavigationArrow: true,
-                  //       dataSource: MeetingDataSource(provider.rangeToDoList),
-                  //       onViewChanged: (viewChangedDetails) {
-                  //         monthSelectionChanged(viewChangedDetails);
-                  //       },
-                  //     );
-                  //   },
-                  // ),
-                  child: Consumer<CalendarProvider>(
+              Expanded(child: Consumer<CalendarProvider>(
                 builder: (context, provider, child) {
                   return SfCalendar(
                     initialDisplayDate: DateTime.now(),
