@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:nudge/providers/items_provider.dart';
 import 'package:nudge/providers/user_provider.dart';
 
@@ -6,6 +7,7 @@ class TodoItem {
   String itemID = "";
   String itemName;
   String? itemDescription;
+  Color color;
   bool done = false;
   bool isRepeating = false;
   DateTime? time;
@@ -26,6 +28,7 @@ class TodoItem {
       this.done = false,
       this.isRepeating = false,
       this.itemDescription,
+      this.color = Colors.green,
       this.time,
       this.location,
       this.link,
@@ -39,6 +42,7 @@ class TodoItem {
       'itemID': itemID,
       'itemName': itemName,
       'itemDescription': itemDescription ?? "",
+      'color': color.value,
       'done': done,
       'isRepeating': isRepeating,
       'time': time
@@ -58,6 +62,7 @@ class TodoItem {
         itemID: map['itemID'] ?? "",
         itemName: map['itemName'] ?? "",
         itemDescription: map['itemDescription'] ?? "",
+        color: Color(map['color'] ?? Colors.green.value),
         done: map['done'],
         isRepeating: map['isRepeating'],
         time: DateTime.fromMillisecondsSinceEpoch(map['time']),
