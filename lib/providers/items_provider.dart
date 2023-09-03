@@ -57,7 +57,7 @@ class ItemsProvider with ChangeNotifier {
       }
     });
 
-    notifyListeners();
+    // notifyListeners();
     return todoItems;
   }
 
