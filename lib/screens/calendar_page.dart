@@ -149,7 +149,7 @@ class MeetingDataSource extends CalendarDataSource {
 
   @override
   Color getColor(int index) {
-    return Colors.greenAccent; //TODO add a color field to TodoItem
+    return appointments![index].color;
   }
 
   @override
