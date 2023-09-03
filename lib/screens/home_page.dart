@@ -5,6 +5,7 @@ import 'package:nudge/providers/items_provider.dart';
 import 'package:nudge/providers/user_provider.dart';
 import 'package:nudge/screens/calendar_page.dart';
 import 'package:nudge/screens/item_page.dart';
+import 'package:nudge/widgets/appbar.dart';
 import 'package:nudge/widgets/banner.dart';
 import 'package:nudge/widgets/day_of_the_week.dart';
 import 'package:provider/provider.dart';
@@ -76,40 +77,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.home),
-              onPressed: () {
-                // Handle home button press
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.calendar_month),
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const CalendarPage())),
-            ),
-            FloatingActionButton(
-              onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const ItemPage())),
-              child: const Icon(Icons.add),
-            ),
-            // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-            IconButton(
-              icon: const Icon(Icons.stacked_line_chart_outlined),
-              onPressed: () {
-                // Handle favorite button press
-              },
-            ),
-            IconButton(
-                onPressed: () => UserProvider().signUserOut(),
-                icon: const Icon(Icons.logout)),
-          ],
-        ),
-      ),
+      bottomNavigationBar: const MyAppBar(showAddButton: true),
       body: SafeArea(
         child: Center(
           child: Column(
