@@ -3,11 +3,11 @@ import 'package:intl/intl.dart';
 
 class DayOfTheWeekWidget extends StatefulWidget {
   final DateTime date;
-  bool isHighlighted;
+  final bool isHighlighted;
   final int index;
-  Function(int) onUpdate = (p0) {};
+  final Function(int) onUpdate;
 
-  DayOfTheWeekWidget(
+  const DayOfTheWeekWidget(
       {super.key,
       required this.date,
       required this.onUpdate,
@@ -18,9 +18,9 @@ class DayOfTheWeekWidget extends StatefulWidget {
   @override
   State<DayOfTheWeekWidget> createState() => _DayOfTheWeekWidgetState();
 
-  void setIsHighlighted(bool value) {
-    isHighlighted = value;
-  }
+  // void setIsHighlighted(bool value) {
+  //   isHighlighted = value;
+  // }
 }
 
 class _DayOfTheWeekWidgetState extends State<DayOfTheWeekWidget> {
