@@ -73,6 +73,10 @@ class _TodoListState extends State<TodoList> {
       positionItems();
     }
 
+    if (widget.items.isEmpty) {
+      return const Center(child: Text("You have no tasks for this day."));
+    }
+
     return Expanded(
       child: SizedBox(
         height: 200.0,
