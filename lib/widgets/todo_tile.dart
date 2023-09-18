@@ -48,7 +48,7 @@ class _ToDoTileState extends State<ToDoTile> {
 
                   // update the provider to show the item as deleted
                   ItemsProvider()
-                      .getItemsForDay(widget.item.time ?? DateTime.now());
+                      .getItemsForDay(widget.item.startTime ?? DateTime.now());
                   setState(() {});
                 },
                 icon: Icons.delete,
@@ -96,7 +96,7 @@ class _ToDoTileState extends State<ToDoTile> {
                     ),
                     Text(
                         DateFormat('MMM d HH:mm', 'en_US').format(
-                          widget.item.time ??
+                          widget.item.startTime ??
                               DateTime(DateTime.now().year,
                                   DateTime.now().month, DateTime.now().day),
                         ),

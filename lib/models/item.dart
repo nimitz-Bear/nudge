@@ -10,7 +10,8 @@ class TodoItem {
   Color color;
   bool done = false;
   bool isRepeating = false;
-  DateTime? time;
+  DateTime? startTime;
+  DateTime? endTime;
   String? location;
   String? link;
   bool isReminder = true;
@@ -29,7 +30,8 @@ class TodoItem {
       this.isRepeating = false,
       this.itemDescription,
       this.color = Colors.green,
-      this.time,
+      this.startTime,
+      this.endTime,
       this.location,
       this.link,
       this.isReminder = true,
@@ -45,8 +47,9 @@ class TodoItem {
       'color': color.value,
       'done': done,
       'isRepeating': isRepeating,
-      'time': time
+      'time': startTime
           ?.millisecondsSinceEpoch, //TODO: come up with some kind of null safety for this
+      'endTime': endTime?.millisecondsSinceEpoch,
       'link': link ?? "",
       'location': location ?? "",
       'isReminder': isReminder,
@@ -65,7 +68,8 @@ class TodoItem {
         color: Color(map['color'] ?? Colors.green.value),
         done: map['done'],
         isRepeating: map['isRepeating'],
-        time: DateTime.fromMillisecondsSinceEpoch(map['time']),
+        startTime: DateTime.fromMillisecondsSinceEpoch(map['time']),
+        endTime: DateTime.fromMillisecondsSinceEpoch(map['time']),
         // DateTime.now()
         // , //FIXME: do some kind of null checking for this
         link: map['link'] ?? "",

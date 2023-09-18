@@ -61,7 +61,7 @@ class _ItemPageState extends State<ItemPage> {
     color = item.color;
 
     // time
-    selectedDate = item.time ?? DateTime.now();
+    selectedDate = item.startTime ?? DateTime.now();
 
     // bool
     done = item.done;
@@ -82,7 +82,7 @@ class _ItemPageState extends State<ItemPage> {
     item.itemDescription = descriptionController.text;
     item.location = locationController.text;
     item.link = linkController.text;
-    item.time = selectedDate;
+    item.startTime = selectedDate;
     item.isReminder = doNotification;
     item.done = done;
     item.labels = labels.map((e) => e.id).toList();
