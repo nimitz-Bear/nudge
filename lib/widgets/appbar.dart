@@ -10,7 +10,7 @@ class MyAppBar extends StatelessWidget {
 
   const MyAppBar({
     super.key,
-    this.showAddButton = false,
+    this.showAddButton = true,
   });
 
   @override

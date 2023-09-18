@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:nudge/providers/calendar_provider.dart';
 import 'package:nudge/providers/items_provider.dart';
 import 'package:nudge/providers/user_provider.dart';
 
