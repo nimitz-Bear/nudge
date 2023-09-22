@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:nudge/models/item.dart';
+import 'package:nudge/providers/user_provider.dart';
 
 class ItemsProvider with ChangeNotifier {
   static final ItemsProvider _singleton = ItemsProvider._internal();
@@ -22,19 +23,27 @@ class ItemsProvider with ChangeNotifier {
   }
 
   // get all the items from firebase, from 00:00 till 23:59:59 on the input date
+  // WHERE the user is the currently logged in user
   Future<List<TodoItem>> getItemsForDay(DateTime date) async {
     DateTime startOfDay =
         DateTime(date.year, date.month, date.day); // Set time to midnight
-    DateTime endOfDay = DateTime(date.year, date.month, date.day, 23, 59,
-        59); // Set time to just before midnight
+    DateTime endOfDay = startOfDay
+        .add(const Duration(days: 1)); // set end time to midnight the next day
 
+    return await getItemsForTimeRange(startOfDay, endOfDay);
+  }
+
+  /// gets all TodoItems for the currently logged in user between two time stamps
+  /// (inclusive of [start], exclusive of [end])
+  Future<List<TodoItem>> getItemsForTimeRange(
+      DateTime start, DateTime end) async {
     List<TodoItem> todoItems = [];
 
     await FirebaseFirestore.instance
         .collection("items")
-        .where('time',
-            isGreaterThanOrEqualTo: startOfDay.millisecondsSinceEpoch)
-        .where('time', isLessThanOrEqualTo: endOfDay.millisecondsSinceEpoch)
+        .where('users', arrayContains: UserProvider().getCurrentUserId())
+        .where('time', isGreaterThanOrEqualTo: start.millisecondsSinceEpoch)
+        .where('time', isLessThan: end.millisecondsSinceEpoch)
         .get()
         .then((value) {
       List<Map<String, dynamic>> data = [];
@@ -47,6 +56,8 @@ class ItemsProvider with ChangeNotifier {
         todoItems.add(TodoItem.fromMap(element));
       }
     });
+
+    // notifyListeners();
     return todoItems;
   }
 

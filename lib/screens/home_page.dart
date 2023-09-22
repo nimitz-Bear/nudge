@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:nudge/models/item.dart';
 import 'package:nudge/providers/items_provider.dart';
-import 'package:nudge/providers/labels_provider.dart';
-import 'package:nudge/providers/user_provider.dart';
-import 'package:nudge/screens/item_page.dart';
+
+import 'package:nudge/widgets/appbar.dart';
 import 'package:nudge/widgets/banner.dart';
 import 'package:nudge/widgets/day_of_the_week.dart';
 import 'package:provider/provider.dart';
 
-import '../models/label.dart';
 import '../widgets/todo_list.dart';
-import 'label_picker.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -76,47 +73,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(
-              icon: const Icon(Icons.home),
-              onPressed: () {
-                // Handle home button press
-              },
-            ),
-            IconButton(
-              icon: const Icon(Icons.calendar_month),
-              onPressed: () async {
-                List<Label>? chosenLabels = await showLabelPicker(context);
-
-                print(chosenLabels);
-
-                if (chosenLabels != null) {
-                  chosenLabels.forEach((element) => print(element.name));
-                }
-              },
-            ),
-            FloatingActionButton(
-              onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) => const ItemPage())),
-              child: const Icon(Icons.add),
-            ),
-            // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-            IconButton(
-              icon: const Icon(Icons.stacked_line_chart_outlined),
-              onPressed: () {
-                // Handle favorite button press
-              },
-            ),
-            IconButton(
-                onPressed: () => UserProvider().signUserOut(),
-                icon: const Icon(Icons.logout)),
-          ],
-        ),
-      ),
+      bottomNavigationBar: const MyAppBar(showAddButton: true),
       body: SafeArea(
         child: Center(
           child: Column(
@@ -180,6 +137,8 @@ class _HomePageState extends State<HomePage> {
 
                           Consumer<ItemsProvider>(
                             builder: (context, provider, _) {
+                              // provider.todayToDoList
+                              //     .forEach((element) => print(element.toMap()));
                               return TodoList(
                                   items: provider.todayToDoList,
                                   checkBoxChanged: checkBoxChanged,
