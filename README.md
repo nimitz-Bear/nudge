@@ -1,10 +1,10 @@
 # Nudge
 
-Nudge is a to-do/reminders app for Android and iOS. It's main feature is to allow users to see and plan around all their tasks. 
+Nudge is a to-do/reminders app for Android and iOS. Its main feature is to allow users to see and plan around all their tasks. 
 
 ## Getting Started
 
-First make sure you have [https://docs.flutter.dev/get-started/install](Flutter) and the [https://firebase.google.com/docs/cli#install_the_firebase_cli](Firebase CLI) tools installed.
+First, make sure you have [Flutter](https://docs.flutter.dev/get-started/install) and the [Firebase CLI Tools](https://firebase.google.com/docs/cli#install_the_firebase_cli) installed.
 
 To run the app:
 $ cd path/to/project/directory/nudge
@@ -14,17 +14,22 @@ $ flutter run
 ## Features
 
 **Current Features:**
-- google/email sign in
-- save a task
-- edit a task
-- delete a task
-- view a calendar with all your tasks
+- Google/email sign in
+- save/edit/delete a task
+- labels for task
+- A calendar overview
 
 **Planned Features**
+
+
+
+
 - remind the user whenever a task is upcoming
 
 
 ## Known Issues
-- there could be some issues editing/saving in offline mode, becuase of a lack of a connection to Firebase
+- there could be some issues editing/saving in offline mode, because of a lack of a connection to Firebase
   
 ## Demo Video
+https://github.com/nimitz-Bear/nudge/assets/106123286/c1f5b956-b11b-4d9b-b55e-7ded488f478f
+
