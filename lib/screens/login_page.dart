@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nudge/providers/user_provider.dart';
+import 'package:nudge/services/notification_service.dart';
 import 'package:nudge/widgets/my_button.dart';
 import 'package:nudge/widgets/my_textfield.dart';
 
@@ -87,7 +88,10 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 10),
                     //apple
                     ImageAndTextButton(
-                      onTap: () {},
+                      onTap: () {
+                        NotificationService().showLocalNotification("it works", "desc");
+                        // NotificationService().showNotification(title: "Sample title", body: "It works");
+                      },
                       buttonText: "Continue with Apple",
                       imageFilePath: 'lib/images/apple.png',
                     ),

@@ -4,16 +4,20 @@ import 'package:nudge/providers/calendar_provider.dart';
 import 'package:nudge/providers/items_provider.dart';
 import 'package:nudge/providers/user_provider.dart';
 import 'package:nudge/screens/auth_page.dart';
+import 'package:nudge/services/notification_service.dart';
 import 'package:nudge/themes/default_theme.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
+
+NotificationService localNotificationService = NotificationService();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await localNotificationService.setup();
   runApp(const MyApp());
 }
 
