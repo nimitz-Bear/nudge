@@ -27,7 +27,8 @@ class _ItemPageState extends State<ItemPage> {
   bool done = false;
   bool doNotification = false;
   DateTime now = DateTime.now();
-  DateTime selectedDate = DateTime.now();
+  DateTime startDateTime = DateTime.now();
+  DateTime endDateTime = DateTime.now().add(Duration(minutes: 30));
   var outputFormat = DateFormat('MMMM dd');
   var timeFormat = DateFormat.Hm();
   bool showTime = false;
@@ -61,7 +62,12 @@ class _ItemPageState extends State<ItemPage> {
     color = item.color;
 
     // time
-    selectedDate = item.time ?? DateTime.now();
+    startDateTime = item.startTime ?? DateTime.now();
+    endDateTime = item.endTime ?? DateTime.now().add(Duration(minutes: 30));
+
+    if (item.startTime != null) {
+      showTime = true;
+    }
 
     // bool
     done = item.done;
@@ -70,7 +76,10 @@ class _ItemPageState extends State<ItemPage> {
     // get the labels
     Future.delayed(Duration.zero, () async {
       labels = await LabelsProvider().getLabelsForItem(item);
-      setState(() {});
+
+      if (mounted) {
+        setState(() {}); //FIXME: this line causes an exception
+      }
     });
 
     //TODO: add ui elements for repeating
@@ -82,7 +91,8 @@ class _ItemPageState extends State<ItemPage> {
     item.itemDescription = descriptionController.text;
     item.location = locationController.text;
     item.link = linkController.text;
-    item.time = selectedDate;
+    item.startTime = startDateTime;
+    item.endTime = endDateTime;
     item.isReminder = doNotification;
     item.done = done;
     item.labels = labels.map((e) => e.id).toList();
@@ -92,7 +102,8 @@ class _ItemPageState extends State<ItemPage> {
   @override
   void initState() {
     // set selectedDate to start of the day
-    selectedDate = DateTime(now.year, now.month, now.day);
+    startDateTime = DateTime(now.year, now.month, now.day);
+    endDateTime = DateTime(now.year, now.month, now.day);
     setupExistingItem();
     super.initState();
   }
@@ -169,8 +180,9 @@ class _ItemPageState extends State<ItemPage> {
                           Expanded(
                             child: TextFormField(
                               style: TextStyle(
-                                  color: Theme.of(context).colorScheme.tertiary,
-                                  fontSize: 20),
+                                color: Theme.of(context).colorScheme.tertiary,
+                                // fontSize: 20
+                              ),
                               decoration: const InputDecoration(
                                   hintText: "Description ...",
                                   border: InputBorder.none),
@@ -195,11 +207,15 @@ class _ItemPageState extends State<ItemPage> {
                                   firstDate: now,
                                   lastDate: DateTime(2101));
 
+                              // set the date time of the start and end of the task
                               setState(() {
-                                if (test != null) selectedDate = test;
+                                if (test != null) {
+                                  startDateTime = test;
+                                  endDateTime = test;
+                                }
                               });
                             },
-                            child: Text(outputFormat.format(selectedDate),
+                            child: Text(outputFormat.format(startDateTime),
                                 style: TextStyle(
                                     color: Theme.of(context)
                                         .colorScheme
@@ -217,20 +233,49 @@ class _ItemPageState extends State<ItemPage> {
                                       TimeOfDay? chosenTime =
                                           await showTimePicker(
                                               context: context,
-                                              initialTime: TimeOfDay.now());
+                                              initialTime:
+                                                  TimeOfDay.fromDateTime(
+                                                      startDateTime));
 
                                       if (chosenTime != null) {
                                         setState(() {
-                                          selectedDate = DateTime(
-                                              selectedDate.year,
-                                              selectedDate.month,
-                                              selectedDate.day,
+                                          startDateTime = DateTime(
+                                              startDateTime.year,
+                                              startDateTime.month,
+                                              startDateTime.day,
                                               chosenTime.hour,
                                               chosenTime.minute);
                                         });
                                       }
                                     },
-                                    child: Text(timeFormat.format(selectedDate),
+                                    child: Text(
+                                        "Start: ${timeFormat.format(startDateTime)}",
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .tertiary))),
+                                TextButton(
+                                    onPressed: () async {
+                                      TimeOfDay? chosenTime =
+                                          await showTimePicker(
+                                              context: context,
+                                              initialTime:
+                                                  TimeOfDay.fromDateTime(
+                                                      endDateTime));
+
+                                      if (chosenTime != null) {
+                                        setState(() {
+                                          endDateTime = DateTime(
+                                              endDateTime.year,
+                                              endDateTime.month,
+                                              endDateTime.day,
+                                              chosenTime.hour,
+                                              chosenTime.minute);
+                                        });
+                                      }
+                                    },
+                                    child: Text(
+                                        "End: ${timeFormat.format(endDateTime)}",
                                         style: TextStyle(
                                             color: Theme.of(context)
                                                 .colorScheme
@@ -270,16 +315,18 @@ class _ItemPageState extends State<ItemPage> {
                       TextFormField(
                           controller: locationController,
                           style: TextStyle(
-                              color: Theme.of(context).colorScheme.tertiary,
-                              fontSize: 20),
+                            color: Theme.of(context).colorScheme.tertiary,
+                            // fontSize: 20
+                          ),
                           decoration: const InputDecoration(
                               hintText: "Location ...",
                               border: InputBorder.none)),
                       TextFormField(
                           controller: linkController,
                           style: TextStyle(
-                              color: Theme.of(context).colorScheme.tertiary,
-                              fontSize: 20),
+                            color: Theme.of(context).colorScheme.tertiary,
+                            // fontSize: 20
+                          ),
                           decoration: const InputDecoration(
                               hintText: "Link ...", border: InputBorder.none)),
                       Divider(color: Theme.of(context).colorScheme.tertiary),
